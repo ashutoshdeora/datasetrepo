@@ -1,0 +1,168 @@
+<ui:composition
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	template="/templates/template.xhtml"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+	<ui:define name="metadata">
+	</ui:define>
+	<ui:define name="content">
+		<h:form>
+			<table>
+				<tr>
+					<td><p:dataTable
+							id="feat_datatable"
+							widgetVar="featTable"
+							value="#{featureDataManagedBean.featurDataList}"
+							var="fea"
+							rows="10"
+							paginator="true"
+							rowIndexVar="rowIndex"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="10,20,50"
+							scrollable="true"
+							scrollWidth="100%"
+							tableStyleClass="datatable_styles"
+							rowStyleClass="column_style">
+							<f:facet name="header">
+								<h:outputText value="Feature Details" />
+								<div style="float: right">
+									<p:commandLink
+										id="xls"
+										ajax="false">
+										<p:graphicImage value="/resources/images/excel.png" />
+										<pe:exporter
+											type="xlsx"
+											target="feat_datatable"
+											fileName="fetureDetailsResult" />
+									</p:commandLink>
+								</div>
+							</f:facet>
+							<p:column
+								width="200"
+								sortBy="#{fea.featureMaster.featureid}">
+								<h:outputText value="#{fea.featureMaster.featureid}" />
+							</p:column>
+							<p:column
+								headerText="Feature Number"
+								width="200"
+								sortBy="#{fea.featureMaster.featureset}">
+								<h:outputText value="#{fea.featureMaster.featureset}" />
+							</p:column>
+							<p:column
+								headerText="Data Set"
+								width="200">
+								<p:dataList
+									id="dlist_feature"
+									value="#{fea.featureMaster.datasetmasters}"
+									var="dts"
+									itemStyleClass="list_style"
+									styleClass="plik_style content_style"
+									rowIndexVar="rowInd">
+									<p:link
+										outcome="/pages/datasetpage.xhtml"
+										value="#{rowInd+1}.) #{dts.datasetname}"
+										styleClass="anchor_style">
+										<f:param
+											name="selectedDataSetLocation"
+											value="#{dts.datasetid}" />
+									</p:link>
+								</p:dataList>
+							</p:column>
+							<p:column
+								headerText="No. of Feature Run"
+								width="200">
+								<h:dataTable
+									value="#{fea.featureRuns}"
+									rendered="#{fea.featureRuns.size() gt 0}"
+									var="fer">
+									<h:column>
+										<h:outputText value="#{fer.featurerunid}" />
+									</h:column>
+									<h:column>
+										<h:outputText value="#{fer.status}" />
+									</h:column>
+								</h:dataTable>
+							</p:column>
+							<p:column
+								headerText="Defects"
+								width="100">
+								<h:dataTable
+									value="#{fea.defects}"
+									var="defL"
+									width="100%"
+									rendered="#{fea.defects.size() gt 0}">
+									<h:column style="color:red;">
+										<p:link
+											outcome="/pages/defectspage.xhtml"
+											value="#{defL.hpqcdefectid}"
+											styleClass="anchor_style">
+											<f:param
+												name="selectedDefect"
+												value="#{defL.hpqcdefectid}" />
+										</p:link>
+									</h:column>
+								</h:dataTable>
+							</p:column>
+							<p:column
+								headerText="Grouping"
+								width="100">
+								<h:outputText value="#{fea.featureMaster.featuregrouping}" />
+							</p:column>
+							<p:column
+								headerText="Test Script"
+								width="400">
+								<h:outputText value="#{fea.featureMaster.featuretestscriptcomments}" />
+							</p:column>
+							<p:column
+								headerText="Comments"
+								width="400">
+								<h:outputText value="#{fea.featureMaster.featuretestscriptcomments}" />
+							</p:column>
+							<p:column
+								headerText="Phase"
+								width="100">
+								<h:outputText value="#{fea.featureMaster.featuretestexecutionphase}" />
+							</p:column>
+							<p:column
+								headerText="Owner"
+								width="100">
+								<h:outputText value="#{fea.featureMaster.featureowner}" />
+							</p:column>
+							<p:column
+								headerText="Data Set Cat"
+								width="100">
+								<h:outputText value="#{fea.featureMaster.featuredatasetcatagoery}" />
+							</p:column>
+							<p:column
+								headerText="Roll Out"
+								width="100">
+								<h:outputText value="#{fea.featureMaster.featurerollout}" />
+							</p:column>
+							<p:column
+								headerText="Status"
+								width="100">
+								<h:outputText value="#{fea.featureMaster.featurestatus}" />
+							</p:column>
+							<p:column
+								headerText="Execution"
+								width="100">
+							</p:column>
+							<p:column
+								headerText="BA"
+								width="100">
+								<h:outputText value="#{fea.featureMaster.ba}" />
+							</p:column>
+							<p:column
+								headerText="Owner"
+								width="100">
+								<h:outputText value="#{fea.featureMaster.owner}" />
+							</p:column>
+						</p:dataTable></td>
+				</tr>
+			</table>
+		</h:form>
+	</ui:define>
+</ui:composition>

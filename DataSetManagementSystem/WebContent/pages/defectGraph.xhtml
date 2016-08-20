@@ -1,0 +1,36 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	template="/templates/template.xhtml"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+	<ui:define name="metadata" >
+	<meta charset="utf-8"/>
+	</ui:define>
+	<ui:define name="content">
+		
+		<style>
+.node circle {
+	fill: #fff;
+	stroke: steelblue;
+	stroke-width: 1.5px;
+}
+
+.node {
+	font: 10px sans-serif;
+}
+
+.link {
+	fill: none;
+	stroke: #ccc;
+	stroke-width: 1.5px;
+}
+</style>
+		<body>
+			<script src="//d3js.org/d3.v3.min.js"></script>
+			<h:outputScript name="/js/riddlegraph.js" library="custom"></h:outputScript>
+			
+			</body>
+	</ui:define>
+</ui:composition>
