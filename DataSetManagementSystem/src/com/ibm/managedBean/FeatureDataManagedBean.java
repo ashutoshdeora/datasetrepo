@@ -10,13 +10,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 
 import org.apache.log4j.Logger;
 
@@ -32,8 +31,7 @@ import com.ibm.model.FeatureRunModelBean;
 
 @ManagedBean
 @ViewScoped
-public class FeatureDataManagedBean extends CommonFacesBean implements
-		Serializable {
+public class FeatureDataManagedBean extends CommonFacesBean implements Serializable {
 
 	/**
 	 * 
@@ -53,15 +51,15 @@ public class FeatureDataManagedBean extends CommonFacesBean implements
 	}
 
 	@PostConstruct
-	public void populateFeatureAllList() {
+	private void populateFeatureAllList() {
+		logger.debug("init called");
 		rolloutOption = new String[2];
 		rolloutOption[0] = "O";
 		rolloutOption[1] = "Y";
 		try {
 			if (loginManagedBean != null) {
 				FacesContext context = FacesContext.getCurrentInstance();
-				String objectId = context.getExternalContext()
-						.getRequestParameterMap().get("selectedFeatureId");
+				String objectId = context.getExternalContext().getRequestParameterMap().get("selectedFeatureId");
 				if (objectId != null) {
 					retriveFeatureListFromDBForFeatureId(objectId);
 				} else {
@@ -70,8 +68,13 @@ public class FeatureDataManagedBean extends CommonFacesBean implements
 
 			}
 		} catch (Exception exception) {
+			logger.error(exception);
 			exception.printStackTrace();
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Application/Data Error", exception.getLocalizedMessage());
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return;
 		}
+		logger.debug("init ended");
 	}
 
 	@SuppressWarnings("unchecked")
@@ -84,30 +87,21 @@ public class FeatureDataManagedBean extends CommonFacesBean implements
 		List<FeatureRun> tempRuns = null;
 		List<DatasetRunDefect> defects = null;
 		List<DatasetRunDefect> defectsTemp = new ArrayList<DatasetRunDefect>();
-		list = entityManager.createQuery(" select fm from FeatureMaster fm")
-				.getResultList();
+		list = entityManager.createQuery(" select fm from FeatureMaster fm").getResultList();
 		FeatureRunModelBean bean = null;
 		for (FeatureMaster master : list) {
 			tempRuns = new ArrayList<FeatureRun>();
 			bean = new FeatureRunModelBean();
 
 			bean.setFeatureMaster(master);
-			featureRuns = entityManager
-					.createQuery(
-							"select fr from FeatureRun fr where fr.featuremasterid = :featuremasterid")
-					.setParameter("featuremasterid",
-							BigDecimal.valueOf(master.getFeatureid()))
-					.getResultList();
+			featureRuns = entityManager.createQuery("select fr from FeatureRun fr where fr.featuremasterid = :featuremasterid")
+					.setParameter("featuremasterid", BigDecimal.valueOf(master.getFeatureid())).getResultList();
 			defectsTemp = new ArrayList<DatasetRunDefect>();
 			if (featureRuns != null && featureRuns.size() > 0) {
 				for (FeatureRun run : featureRuns) {
 					defects = new ArrayList<DatasetRunDefect>();
-					defects = entityManager
-							.createQuery(
-									"select df from DatasetRunDefect df where df.featurerunid = :featurerunid")
-							.setParameter("featurerunid",
-									BigDecimal.valueOf(run.getFeaturerunid()))
-							.getResultList();
+					defects = entityManager.createQuery("select df from DatasetRunDefect df where df.featurerunid = :featurerunid")
+							.setParameter("featurerunid", BigDecimal.valueOf(run.getFeaturerunid())).getResultList();
 					run.setListofDefects(defects);
 					tempRuns.add(run);
 					defectsTemp.addAll(defects);
@@ -126,8 +120,7 @@ public class FeatureDataManagedBean extends CommonFacesBean implements
 	}
 
 	@SuppressWarnings("unchecked")
-	private List<FeatureRunModelBean> retriveFeatureListFromDBForFeatureId(
-			String featureID) {
+	private List<FeatureRunModelBean> retriveFeatureListFromDBForFeatureId(String featureID) {
 		EntityManager entityManager = getEntitymanagerFromCurrent();
 		entityManager.getTransaction().begin();
 		featurDataList = new ArrayList<FeatureRunModelBean>();
@@ -135,10 +128,8 @@ public class FeatureDataManagedBean extends CommonFacesBean implements
 		List<FeatureRun> featureRuns = new ArrayList<FeatureRun>();
 		List<DatasetRunDefect> defects = new ArrayList<DatasetRunDefect>();
 		List<DatasetRunDefect> defectsTemp = new ArrayList<DatasetRunDefect>();
-		list = entityManager
-				.createQuery(
-						" select fm from FeatureMaster fm where fm.featureset=:featureset")
-				.setParameter("featureset", featureID).getResultList();
+		list = entityManager.createQuery(" select fm from FeatureMaster fm where fm.featureset=:featureset").setParameter("featureset", featureID)
+				.getResultList();
 		FeatureRunModelBean bean = null;
 		for (FeatureMaster master : list) {
 			bean = new FeatureRunModelBean();
@@ -146,23 +137,15 @@ public class FeatureDataManagedBean extends CommonFacesBean implements
 				System.out.println(master.getFeatureid());
 			}
 			bean.setFeatureMaster(master);
-			featureRuns = entityManager
-					.createQuery(
-							"select fr from FeatureRun fr where fr.featuremasterid = :featuremasterid")
-					.setParameter("featuremasterid",
-							BigDecimal.valueOf(master.getFeatureid()))
-					.getResultList();
+			featureRuns = entityManager.createQuery("select fr from FeatureRun fr where fr.featuremasterid = :featuremasterid")
+					.setParameter("featuremasterid", BigDecimal.valueOf(master.getFeatureid())).getResultList();
 			bean.setFeatureRuns(featureRuns);
 			defectsTemp = new ArrayList<DatasetRunDefect>();
 			if (featureRuns != null && featureRuns.size() > 0) {
 				for (FeatureRun run : featureRuns) {
 					defects = new ArrayList<DatasetRunDefect>();
-					defects = entityManager
-							.createQuery(
-									"select df from DatasetRunDefect df where df.featurerunid = :featurerunid")
-							.setParameter("featurerunid",
-									BigDecimal.valueOf(run.getFeaturerunid()))
-							.getResultList();
+					defects = entityManager.createQuery("select df from DatasetRunDefect df where df.featurerunid = :featurerunid")
+							.setParameter("featurerunid", BigDecimal.valueOf(run.getFeaturerunid())).getResultList();
 					defectsTemp.addAll(defects);
 				}
 			}

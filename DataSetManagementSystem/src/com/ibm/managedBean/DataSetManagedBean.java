@@ -1,17 +1,15 @@
 package com.ibm.managedBean;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 
 import org.apache.log4j.Logger;
 
@@ -30,10 +28,9 @@ public class DataSetManagedBean extends CommonFacesBean implements Serializable 
 	final static Logger logger = Logger.getLogger(DataSetManagedBean.class);
 	private List<DatasetMaster> datasetMastersList;
 
-
 	@PostConstruct
 	private void populateAllDataSet() {
-
+		logger.debug("init called");
 		try {
 
 			FacesContext context = FacesContext.getCurrentInstance();
@@ -45,12 +42,15 @@ public class DataSetManagedBean extends CommonFacesBean implements Serializable 
 			}
 
 		} catch (Exception exception) {
+			logger.error(exception);
 			exception.printStackTrace();
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Application/Data Error", exception.getLocalizedMessage());
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return;
 		}
-
+		logger.debug("init ended");
 	}
 
-	
 	@SuppressWarnings("unchecked")
 	private List<DatasetMaster> retriveAllDataSetDataForDataSetId(String objectId) {
 		EntityManager entityManager = getEntitymanagerFromCurrent();
@@ -62,9 +62,8 @@ public class DataSetManagedBean extends CommonFacesBean implements Serializable 
 		for (DatasetMaster master : temp) {
 			tempdefects = new ArrayList<DatasetRunDefect>();
 			for (DatasetRun datasetRun : master.getDatasetruns()) {
-				List<DatasetRunDefect> defects = entityManager
-						.createNativeQuery("select * from DATASETRUNDEFECT df where df.datasetrunid= " + datasetRun.getDatasetrunid(), DatasetRunDefect.class)
-						.getResultList();
+				List<DatasetRunDefect> defects = entityManager.createNativeQuery(
+						"select * from DATASETRUNDEFECT df where df.datasetrunid= " + datasetRun.getDatasetrunid(), DatasetRunDefect.class).getResultList();
 				tempdefects.addAll(defects);
 			}
 			master.setDefects(tempdefects);
@@ -89,9 +88,8 @@ public class DataSetManagedBean extends CommonFacesBean implements Serializable 
 		for (DatasetMaster master : temp) {
 			tempdefects = new ArrayList<DatasetRunDefect>();
 			for (DatasetRun datasetRun : master.getDatasetruns()) {
-				List<DatasetRunDefect> defects = entityManager
-						.createNativeQuery("select * from DATASETRUNDEFECT df where df.datasetrunid= " + datasetRun.getDatasetrunid(), DatasetRunDefect.class)
-						.getResultList();
+				List<DatasetRunDefect> defects = entityManager.createNativeQuery(
+						"select * from DATASETRUNDEFECT df where df.datasetrunid= " + datasetRun.getDatasetrunid(), DatasetRunDefect.class).getResultList();
 				tempdefects.addAll(defects);
 			}
 			master.setDefects(tempdefects);

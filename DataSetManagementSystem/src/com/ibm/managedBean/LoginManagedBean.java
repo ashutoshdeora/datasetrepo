@@ -7,7 +7,6 @@ import java.util.List;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -28,9 +27,6 @@ public class LoginManagedBean extends CommonFacesBean implements Serializable {
 	final static Logger logger = Logger.getLogger(LoginManagedBean.class);
 	private boolean loggedIn;
 
-	@ManagedProperty(value = "#{navigationBean}")
-	private NavigationBean navigationBean;
-
 	public LoginManagedBean() {
 
 	}
@@ -41,14 +37,13 @@ public class LoginManagedBean extends CommonFacesBean implements Serializable {
 
 	@SuppressWarnings("unchecked")
 	public String checkuserloginWithRole() {
+		logger.debug("checkuserloginWithRole called");
 		try {
 			List<UserDetail> userDetails = new ArrayList<UserDetail>();
 			EntityManager entityManager = getEntitymanagerFromCurrent();
 			entityManager.getTransaction().begin();
-			userDetails = entityManager
-					.createQuery(
-							"select ud from UserDetail ud where ud.username=:username")
-					.setParameter("username", userName).getResultList();
+			userDetails = entityManager.createQuery("select ud from UserDetail ud where ud.username=:username").setParameter("username", userName)
+					.getResultList();
 
 			entityManager.getTransaction().commit();
 			entityManager.close();
@@ -57,34 +52,46 @@ public class LoginManagedBean extends CommonFacesBean implements Serializable {
 				userName = userDetails.get(0).getUsername();
 				userRole = userDetails.get(0).getAccesslevel();
 				loggedIn = true;
-				return navigationBean.redirectToWelcome();
+				return "/pages/home.xhtml?faces-redirect=true";
 			}
 			FacesMessage msg = new FacesMessage("Login error!", "ERROR MSG");
 			msg.setSeverity(FacesMessage.SEVERITY_ERROR);
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
 			// To to login page
-			return navigationBean.toLogin();
+			logger.debug("checkuserloginWithRole ended");
+			return "/pages/login.xhtml?faces-redirect=true";
 
 		} catch (Exception exception) {
+			logger.error(exception);
 			exception.printStackTrace();
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Application/Data Error", exception.getLocalizedMessage());
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return null;
 
 		}
-		return null;
 	}
 
 	public String logout() throws IOException {
+		logger.debug("logout called");
 		// Set the paremeter indicating that user is logged in to false
-		setLoggedIn(false);
-		ExternalContext ec = FacesContext.getCurrentInstance()
-				.getExternalContext();
-		ec.invalidateSession();
-		// Set logout message
-		FacesMessage msg = new FacesMessage("Logout success!", "INFO MSG");
-		msg.setSeverity(FacesMessage.SEVERITY_INFO);
-		FacesContext.getCurrentInstance().addMessage(null, msg);
-
-		return navigationBean.toLogin();
+		try {
+			setLoggedIn(false);
+			ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+			ec.invalidateSession();
+			// Set logout message
+			FacesMessage msg = new FacesMessage("Logout success!", "INFO MSG");
+			msg.setSeverity(FacesMessage.SEVERITY_INFO);
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			logger.debug("logout ended");
+			return "/pages/login.xhtml?faces-redirect=true";
+		} catch (Exception exception) {
+			logger.error(exception);
+			exception.printStackTrace();
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Application/Data Error", exception.getLocalizedMessage());
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return null;
+		}
 	}
 
 	/**
@@ -140,11 +147,4 @@ public class LoginManagedBean extends CommonFacesBean implements Serializable {
 		this.loggedIn = loggedIn;
 	}
 
-	public NavigationBean getNavigationBean() {
-		return navigationBean;
-	}
-
-	public void setNavigationBean(NavigationBean navigationBean) {
-		this.navigationBean = navigationBean;
-	}
 }

@@ -20,7 +20,7 @@
 		<properties>
 			<property name="javax.persistence.jdbc.driver" value="oracle.jdbc.OracleDriver" />
 			<property name="javax.persistence.jdbc.url" value="jdbc:oracle:thin:@localhost:1521:xe" />
-			<property name="javax.persistence.jdbc.user" value="projectUser" />
+			<property name="javax.persistence.jdbc.user" value="projectuser" />
 			<property name="javax.persistence.jdbc.password" value="welcome1" />
 			<property name="eclipselink.logging.level" value="FINE" />
 			<property name="eclipselink.logging.parameters" value="true" />

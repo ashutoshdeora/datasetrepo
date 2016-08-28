@@ -1,10 +1,22 @@
 package com.ibm.entity;
 
 import java.io.Serializable;
-import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  * The persistent class for the FEATUREMASTER database table.
@@ -49,7 +61,7 @@ public class FeatureMaster implements Serializable {
 
 	@Column(length = 255)
 	private String featuretestexecutionphase;
-	
+
 	@Column(length = 255)
 	private String featurephase;
 
@@ -73,10 +85,10 @@ public class FeatureMaster implements Serializable {
 
 	@Column(nullable = false, length = 40)
 	private String updatedby;
-	
+
 	@Transient
 	private String datasetId;
-	
+
 	@Transient
 	private List<String> defectId;
 
@@ -85,12 +97,9 @@ public class FeatureMaster implements Serializable {
 	private List<DatasetFeatureHistory> datasetfeaturehistories;
 
 	// bi-directional many-to-many association to DatasetMaster
-	@ManyToMany
-	@JoinTable(name = "DATASETFEATURE", joinColumns = { @JoinColumn(name = "FEATUREID", nullable = false) }, inverseJoinColumns = {
-			@JoinColumn(name = "DATASETID", nullable = false) })
+	@ManyToMany(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
+	@JoinTable(name = "DATASETFEATURE", joinColumns = { @JoinColumn(name = "FEATUREID", nullable = false) }, inverseJoinColumns = { @JoinColumn(name = "DATASETID", nullable = false) })
 	private List<DatasetMaster> datasetmasters;
-
-	
 
 	public FeatureMaster() {
 	}
@@ -277,7 +286,8 @@ public class FeatureMaster implements Serializable {
 	}
 
 	/**
-	 * @param datasetId the datasetId to set
+	 * @param datasetId
+	 *            the datasetId to set
 	 */
 	public void setDatasetId(String datasetId) {
 		this.datasetId = datasetId;
@@ -291,7 +301,8 @@ public class FeatureMaster implements Serializable {
 	}
 
 	/**
-	 * @param defectId the defectId to set
+	 * @param defectId
+	 *            the defectId to set
 	 */
 	public void setDefectId(List<String> defectId) {
 		this.defectId = defectId;
@@ -305,7 +316,8 @@ public class FeatureMaster implements Serializable {
 	}
 
 	/**
-	 * @param featurephase the featurephase to set
+	 * @param featurephase
+	 *            the featurephase to set
 	 */
 	public void setFeaturephase(String featurephase) {
 		this.featurephase = featurephase;

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<f:view contentType="text/html" id="fview">
+
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<h:outputStylesheet id="custom_style_id" name="/css/datatables.css"
+		library="custom" />
+
+
+	<ui:debug />
+	<f:metadata>
+		<ui:insert name="metadata" />
+	</f:metadata>
+	<h:head></h:head>
+	<h:body>
+		<table id="template_container" class="table_style">
+			<tr id="header_container" class="header_style_template">
+				<td><ui:include src="header.xhtml" /></td>
+			</tr>
+			<tr id="body_container" class="body_style">
+				<td><ui:insert name="content" /></td>
+			</tr>
+		</table>
+	</h:body>
+</f:view>
+</html>

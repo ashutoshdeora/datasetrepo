@@ -1,81 +1,87 @@
 package com.ibm.entity;
 
 import java.io.Serializable;
-import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
 /**
  * The persistent class for the DATASETFEATUREHISTORY database table.
  * 
  */
 @Entity
-@Table(name="DATASETFEATUREHISTORY")
-@NamedQuery(name="DatasetFeatureHistory.findAll", query="SELECT d FROM DatasetFeatureHistory d")
+@Table(name = "DATASETFEATUREHISTORY")
+@NamedQuery(name = "DatasetFeatureHistory.findAll", query = "SELECT d FROM DatasetFeatureHistory d")
 public class DatasetFeatureHistory implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(unique=true, nullable=false, precision=22)
+	@Column(unique = true, nullable = false, precision = 22)
 	private long featurehistoryid;
 
-	@Column(length=255)
+	@Column(length = 255)
 	private String ba;
 
-	@Column(nullable=false, length=40)
+	@Column(nullable = false, length = 40)
 	private String createdby;
 
-	@Column(nullable=false)
+	@Column(nullable = false)
 	private Timestamp creationdate;
 
-	@Column(length=255)
+	@Column(length = 255)
 	private String featuredatasetcatagoery;
 
-	@Column(length=255)
+	@Column(length = 255)
 	private String featuregrouping;
 
-	@Column(length=255)
+	@Column(length = 255)
 	private String featureowner;
 
-	@Column(length=1)
+	@Column(length = 1)
 	private String featurerollout;
 
-	@Column(nullable=false, length=20)
+	@Column(nullable = false, length = 20)
 	private String featureset;
 
-	@Column(length=255)
+	@Column(length = 255)
 	private String featurestatus;
 
-	@Column(length=255)
+	@Column(length = 255)
 	private String featuretestexecutionphase;
 
-	@Column(length=4000)
+	@Column(length = 4000)
 	private String featuretestscriptcomments;
 
-	@Column(length=4000)
+	@Column(length = 4000)
 	private String featuretestscriptname;
 
-	@Column(length=255)
+	@Column(length = 255)
 	private String owner;
 
-	@Column(precision=10)
+	@Column(precision = 10)
 	private BigDecimal recordstatus;
 
-	@Column(nullable=false)
+	@Column(nullable = false)
 	private Timestamp updatedate;
 
-	@Column(nullable=false, length=40)
+	@Column(nullable = false, length = 40)
 	private String updatedby;
 
-	//bi-directional many-to-one association to DatasetMaster
+	// bi-directional many-to-one association to DatasetMaster
 	@ManyToOne
-	@JoinColumn(name="DATASETID", nullable=false)
+	@JoinColumn(name = "DATASETID", nullable = false)
 	private DatasetMaster datasetmaster;
 
-	//bi-directional many-to-one association to FeatureMaster
+	// bi-directional many-to-one association to FeatureMaster
 	@ManyToOne
-	@JoinColumn(name="FEATUREMASTERID", nullable=false)
+	@JoinColumn(name = "FEATUREMASTERID", nullable = false)
 	private FeatureMaster featuremaster;
 
 	public DatasetFeatureHistory() {

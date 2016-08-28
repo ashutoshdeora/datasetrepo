@@ -1,44 +1,50 @@
 package com.ibm.entity;
 
 import java.io.Serializable;
-import javax.persistence.*;
 import java.sql.Timestamp;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
 /**
  * The persistent class for the DATASETACCOUNTHISTORY database table.
  * 
  */
 @Entity
-@Table(name="DATASETACCOUNTHISTORY")
-@NamedQuery(name="DatasetAccountHistory.findAll", query="SELECT d FROM DatasetAccountHistory d")
+@Table(name = "DATASETACCOUNTHISTORY")
+@NamedQuery(name = "DatasetAccountHistory.findAll", query = "SELECT d FROM DatasetAccountHistory d")
 public class DatasetAccountHistory implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(unique=true, nullable=false, precision=22)
+	@Column(unique = true, nullable = false, precision = 22)
 	private long accounthistoryid;
 
-	@Column(nullable=false, length=40)
+	@Column(nullable = false, length = 40)
 	private String createdby;
 
-	@Column(nullable=false)
+	@Column(nullable = false)
 	private Timestamp creationdate;
 
-	@Column(nullable=false)
+	@Column(nullable = false)
 	private Timestamp updatedate;
 
-	@Column(nullable=false, length=40)
+	@Column(nullable = false, length = 40)
 	private String updatedby;
 
-	//bi-directional many-to-one association to AccountMaster
+	// bi-directional many-to-one association to AccountMaster
 	@ManyToOne
-	@JoinColumn(name="ACCOUNTMASTERID", nullable=false)
+	@JoinColumn(name = "ACCOUNTMASTERID", nullable = false)
 	private AccountMaster accountmaster;
 
-	//bi-directional many-to-one association to DatasetMaster
+	// bi-directional many-to-one association to DatasetMaster
 	@ManyToOne
-	@JoinColumn(name="DATASETMASTERID", nullable=false)
+	@JoinColumn(name = "DATASETMASTERID", nullable = false)
 	private DatasetMaster datasetmaster;
 
 	public DatasetAccountHistory() {

@@ -1,49 +1,57 @@
 package com.ibm.entity;
 
 import java.io.Serializable;
-import javax.persistence.*;
 import java.sql.Timestamp;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
 /**
  * The persistent class for the USERDETAILS database table.
  * 
  */
 @Entity
-@Table(name="USERDETAILS")
-@NamedQuery(name="UserDetail.findAll", query="SELECT u FROM UserDetail u")
+@Table(name = "USERDETAILS")
+@NamedQuery(name = "UserDetail.findAll", query = "SELECT u FROM UserDetail u")
 public class UserDetail implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name="USER_ID", unique=true, nullable=false, precision=10)
+	@Column(name = "USER_ID", unique = true, nullable = false, precision = 10)
 	private long userId;
 
-	@Column(length=255)
+	@Column(length = 255)
 	private String accesslevel;
 
-	@Column(nullable=false, length=40)
+	@Column(nullable = false, length = 40)
 	private String createdby;
 
-	@Column(nullable=false)
+	@Column(nullable = false)
 	private Timestamp creationdate;
 
-
-	@Column(nullable=false)
+	@Column(nullable = false)
 	private Timestamp updatedate;
 
-	@Column(nullable=false, length=40)
+	@Column(nullable = false, length = 40)
 	private String updatedby;
 
-	@Column(length=255)
+	@Column(length = 255)
 	private String empid;
 
-	@Column(length=255)
+	@Column(length = 255)
 	private String password;
 
-
-	@Column(length=255)
+	@Column(length = 255)
 	private String username;
+
+	@Column
+	private String hpqcUSerID;
+
+	@Column
+	private String hpqcPassword;
 
 	public UserDetail() {
 	}
@@ -64,8 +72,6 @@ public class UserDetail implements Serializable {
 		this.accesslevel = accesslevel;
 	}
 
-	
-
 	public String getEmpid() {
 		return this.empid;
 	}
@@ -81,8 +87,6 @@ public class UserDetail implements Serializable {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
-	
 
 	public String getUsername() {
 		return this.username;
@@ -100,7 +104,8 @@ public class UserDetail implements Serializable {
 	}
 
 	/**
-	 * @param createdby the createdby to set
+	 * @param createdby
+	 *            the createdby to set
 	 */
 	public void setCreatedby(String createdby) {
 		this.createdby = createdby;
@@ -114,7 +119,8 @@ public class UserDetail implements Serializable {
 	}
 
 	/**
-	 * @param creationdate the creationdate to set
+	 * @param creationdate
+	 *            the creationdate to set
 	 */
 	public void setCreationdate(Timestamp creationdate) {
 		this.creationdate = creationdate;
@@ -128,7 +134,8 @@ public class UserDetail implements Serializable {
 	}
 
 	/**
-	 * @param updatedate the updatedate to set
+	 * @param updatedate
+	 *            the updatedate to set
 	 */
 	public void setUpdatedate(Timestamp updatedate) {
 		this.updatedate = updatedate;
@@ -142,10 +149,41 @@ public class UserDetail implements Serializable {
 	}
 
 	/**
-	 * @param updatedby the updatedby to set
+	 * @param updatedby
+	 *            the updatedby to set
 	 */
 	public void setUpdatedby(String updatedby) {
 		this.updatedby = updatedby;
+	}
+
+	/**
+	 * @return the hpqcUSerID
+	 */
+	public String getHpqcUSerID() {
+		return hpqcUSerID;
+	}
+
+	/**
+	 * @param hpqcUSerID
+	 *            the hpqcUSerID to set
+	 */
+	public void setHpqcUSerID(String hpqcUSerID) {
+		this.hpqcUSerID = hpqcUSerID;
+	}
+
+	/**
+	 * @return the hpqcPassword
+	 */
+	public String getHpqcPassword() {
+		return hpqcPassword;
+	}
+
+	/**
+	 * @param hpqcPassword
+	 *            the hpqcPassword to set
+	 */
+	public void setHpqcPassword(String hpqcPassword) {
+		this.hpqcPassword = hpqcPassword;
 	}
 
 }

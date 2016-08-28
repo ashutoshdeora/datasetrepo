@@ -9,19 +9,15 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
-import javax.faces.bean.ViewScoped;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 
 import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.Cell;
@@ -34,18 +30,19 @@ import org.primefaces.model.UploadedFile;
 import com.ibm.entity.AccountMaster;
 import com.ibm.entity.DatasetMaster;
 import com.ibm.entity.FeatureMaster;
-
+import com.ibm.model.ExcelReadBean;
 
 @ManagedBean
 @RequestScoped
-public class FileUploadView  extends CommonFacesBean implements Serializable {
+public class FileUploadView extends CommonFacesBean implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	final static Logger logger = Logger.getLogger(FileUploadView.class);
-
+	private static final String DUMMYDATASET = "Dummy Data Set";
+	private static final String BLANKDATA = "No Data";
 
 	public FileUploadView() {
 
@@ -57,8 +54,10 @@ public class FileUploadView  extends CommonFacesBean implements Serializable {
 	private List<DatasetMaster> dataSets;
 	private List<FeatureMaster> featureMasters;
 	private List<AccountMaster> accountMasters;
+	private List<ExcelReadBean> excelReadBeansList;
 
-
+	@ManagedProperty(value = "#{loginManagedBean}")
+	private LoginManagedBean loginManagedBean;
 
 	/**
 	 * 
@@ -78,24 +77,28 @@ public class FileUploadView  extends CommonFacesBean implements Serializable {
 
 			// for feature data reading and insert
 
-			sheetNumberToRead = 2;
-			dataFromExcel = new ArrayList<String[]>();
-			dataFromExcel = readSheet(file.getInputstream(), sheetNumberToRead);
-			populateDataSetList(dataFromExcel);
-			
+			// sheetNumberToRead = 2;
+			// dataFromExcel = new ArrayList<String[]>();
+			// dataFromExcel = readSheet(file.getInputstream(),
+			// sheetNumberToRead);
+			// populateDataSetList(dataFromExcel);
+
 			sheetNumberToRead = 0;
 			dataFromExcel = new ArrayList<String[]>();
+			excelReadBeansList = new ArrayList<ExcelReadBean>();
 			dataFromExcel = readSheet(file.getInputstream(), sheetNumberToRead);
-			populateFeatureBeanList(dataFromExcel);
+			excelReadBeansList = populateEcxelList(dataFromExcel);
+			insertAllData(excelReadBeansList);
 
 			// for account data reading and insert
-			sheetNumberToRead = 1;
-			dataFromExcel = new ArrayList<String[]>();
-			dataFromExcel = readSheet(file.getInputstream(), sheetNumberToRead);
-			populateCustomerDataList(dataFromExcel);
-			insertDataSet(dataSets);
-			insertCustomerDataAndRelation(accountMasters);
-			insertfeatureData(featureMasters);
+			// sheetNumberToRead = 1;
+			// dataFromExcel = new ArrayList<String[]>();
+			// dataFromExcel = readSheet(file.getInputstream(),
+			// sheetNumberToRead);
+			// populateCustomerDataList(dataFromExcel);
+			// insertDataSet(dataSets);
+			// insertCustomerDataAndRelation(accountMasters);
+			// insertfeatureData(featureMasters);
 
 		} catch (Exception exception) {
 			exception.printStackTrace();
@@ -171,10 +174,9 @@ public class FileUploadView  extends CommonFacesBean implements Serializable {
 					case Cell.CELL_TYPE_STRING:
 						celldataColumns.add(cell.getStringCellValue());
 						System.out.print(cell.getStringCellValue() + "\t\t");
-						;
 						break;
 					case Cell.CELL_TYPE_BLANK:
-						celldataColumns.add(cell.getStringCellValue());
+						celldataColumns.add(BLANKDATA);
 					}
 				}
 				System.out.println();
@@ -210,6 +212,80 @@ public class FileUploadView  extends CommonFacesBean implements Serializable {
 		System.out.println(dataSets.size());
 	}
 
+	private List<ExcelReadBean> populateEcxelList(List<String[]> dataFromExcel) {
+
+		List<ExcelReadBean> excelReadBeans = new ArrayList<ExcelReadBean>();
+		for (int i = 0; i < dataFromExcel.size(); i++) {
+			// read one row each time
+			String[] columns = dataFromExcel.get(i);
+			ExcelReadBean bean = new ExcelReadBean();
+			bean.setID(columns[0]);
+			bean.setGrouping(columns[1]);
+			bean.setTestScenario(columns[2]);
+			bean.setTestScenarioDescription(columns[3]);
+			bean.setTestScript(columns[4]);
+			bean.setComments(columns[5]);
+			bean.setClarificationsCommentsDonnaSheet(columns[6]);
+			bean.setScriptfromDonnaSheet(columns[7]);
+			bean.setFeatureEndToEndTestPhase(columns[8]);
+			bean.setSITCycle(columns[9]);
+			bean.setSITCycleComments(columns[10]);
+			bean.setOwner(columns[11]);
+			bean.setDataSetCategory(columns[12]);
+			bean.setRollout(columns[13]);
+			bean.setTotalScripts(columns[14]);
+			bean.setStatus(columns[15]);
+			bean.setMT(columns[16]);
+			bean.setTSSize(columns[17]);
+			bean.setDSSize(columns[18]);
+			bean.setBlockers(columns[19]);
+			bean.setScore(columns[20]);
+			bean.setGroup(columns[21]);
+			bean.setIBMAssignedTestWeek(columns[22]);
+			bean.setAssignedResource(columns[23]);
+			bean.setExecutionResource(columns[24]);
+			bean.setExecutionDate(columns[25]);
+			bean.setExecutionStatus(columns[26]);
+			bean.setDefectAndComment(columns[27]);
+			bean.setDatasetSPLocation(columns[28]);
+			bean.setAccountID(columns[29]);
+			bean.setAccountName(columns[30]);
+			bean.setSiteID(columns[31]);
+			bean.setSiteName(columns[32]);
+			bean.setWorkAroundAdopted(columns[33]);
+			bean.setInterscriptSequenceByCustomer(columns[34]);
+			bean.setRoute(columns[35]);
+			bean.setOwnerOffshore(columns[36]);
+			bean.setTesterOffshore(columns[37]);
+			bean.setE2EBeExecuted(columns[38]);
+			bean.setUpdatedbasedonTS_Tracking(columns[39]);
+			bean.setIBMDelivered(columns[40]);
+			bean.setCategorizationOfDeficiency(columns[41]);
+			bean.setExplanationComments(columns[42]);
+			bean.setOnsiteBlocker(columns[43]);
+			bean.setScriptUpdatedNumberOfTimes(columns[44]);
+			bean.setNationalONLYFeature(columns[45]);
+			bean.setCannotbeDetermined(columns[46]);
+			bean.setIBMwrittenITscripts(columns[47]);
+			bean.setIBMITScriptstatus(columns[48]);
+			bean.setIBMITscriptsreviewedbyUNF(columns[49]);
+			bean.setIBMITScriptNameFTSelection(columns[50]);
+			bean.setNoOwner(columns[51]);
+			bean.setAditya(columns[52]);
+			bean.setAnirnay(columns[53]);
+			bean.setArindam(columns[54]);
+			bean.setDebdutta(columns[55]);
+			bean.setDipak(columns[56]);
+			bean.setMrinal(columns[57]);
+			bean.setSaumalya(columns[58]);
+			bean.setSubhrashis(columns[59]);
+			bean.setNotAvilable(columns[60]);
+			excelReadBeans.add(bean);
+		}
+
+		return excelReadBeans;
+	}
+
 	private void populateFeatureBeanList(List<String[]> dataFromExcel) {
 		featureMasters = new ArrayList<FeatureMaster>();
 		for (int i = 0; i < dataFromExcel.size(); i++) {
@@ -225,7 +301,7 @@ public class FileUploadView  extends CommonFacesBean implements Serializable {
 			feature.setFeaturedatasetcatagoery((columns[6] != null) ? columns[6] : "No Data");
 			feature.setFeaturerollout((columns[7] != null) ? columns[7] : "No Data");
 			feature.setFeaturestatus((columns[8] != null) ? columns[8] : "No Data");
-			feature.setFeaturetestexecutionphase((columns[9]!= null) ? columns[9]: "No Data");
+			feature.setFeaturetestexecutionphase((columns[9] != null) ? columns[9] : "No Data");
 			feature.setOwner((columns[10] != null) ? columns[10] : "No Data");
 			feature.setBa((columns[11] != null) ? columns[11] : "No Data");
 			feature.setFeatureid(Long.valueOf(columns[13]));
@@ -235,8 +311,6 @@ public class FileUploadView  extends CommonFacesBean implements Serializable {
 		System.out.println(featureMasters.size());
 	}
 
-	
-	
 	private void populateCustomerDataList(List<String[]> dataFromExcel) {
 		accountMasters = new ArrayList<AccountMaster>();
 		for (int i = 0; i < dataFromExcel.size(); i++) {
@@ -251,6 +325,203 @@ public class FileUploadView  extends CommonFacesBean implements Serializable {
 		}
 
 	}
+
+	@SuppressWarnings("unchecked")
+	private void insertAllData(List<ExcelReadBean> list) {
+		EntityManager entityManager = getEntitymanagerFromCurrent();
+		// insert dataset
+		entityManager.getTransaction().begin();
+		BigDecimal dslastId = (BigDecimal) entityManager.createNativeQuery("select NVL(MAX(DATASETID), 0) lastId from Datasetmaster").getSingleResult();
+		long dsprimaryKey = dslastId.longValue();
+		// dummy set for feature without any data set
+		DatasetMaster dataSetData = new DatasetMaster();
+		dataSetData.setDatasetname(DUMMYDATASET);
+		dataSetData.setCreatedby(loginManagedBean.getUserName());
+		dataSetData.setUpdatedby(loginManagedBean.getUserName());
+		dataSetData.setCreationdate(new Timestamp(new Date().getTime()));
+		dataSetData.setUpdatedate(new Timestamp(new Date().getTime()));
+		dataSetData.setStatus("ACT");
+		dsprimaryKey = dsprimaryKey + 1;
+		dataSetData.setDatasetid(dsprimaryKey);
+
+		entityManager.persist(dataSetData);
+		entityManager.getTransaction().commit();
+		for (ExcelReadBean bean : list) {
+			entityManager.getTransaction().begin();
+			List<DatasetMaster> masters = entityManager.createQuery("select ds.datasetname from DatasetMaster ds where ds.datasetname=:datasetname")
+					.setParameter("datasetname", bean.getDatasetSPLocation()).getResultList();
+			entityManager.getTransaction().commit();
+			if (masters != null && masters.size() > 0) {
+				// don't insert again
+			} else {
+				if (!BLANKDATA.equalsIgnoreCase(bean.getDatasetSPLocation())) {
+					dataSetData = new DatasetMaster();
+					dataSetData.setDatasetname(bean.getDatasetSPLocation());
+					dataSetData.setCreatedby(loginManagedBean.getUserName());
+					dataSetData.setUpdatedby(loginManagedBean.getUserName());
+					dataSetData.setCreationdate(new Timestamp(new Date().getTime()));
+					dataSetData.setUpdatedate(new Timestamp(new Date().getTime()));
+					dataSetData.setStatus("ACT");
+					dsprimaryKey = dsprimaryKey + 1;
+					dataSetData.setDatasetid(dsprimaryKey);
+					entityManager.getTransaction().begin();
+					entityManager.persist(dataSetData);
+					entityManager.getTransaction().commit();
+				}
+			}
+
+		}
+		// insert feature
+		entityManager.getTransaction().begin();
+		BigDecimal fslastId = (BigDecimal) entityManager.createNativeQuery("select NVL(MAX(featureid), 0) lastId from FeatureMaster").getSingleResult();
+		entityManager.getTransaction().commit();
+		long fsprimaryKey = fslastId.longValue();
+		for (ExcelReadBean bean : list) {
+			entityManager.getTransaction().begin();
+			List<FeatureMaster> featureMasters = entityManager.createQuery("select fs from FeatureMaster fs where fs.featureset=:featureset ")
+					.setParameter("featureset", bean.getID()).getResultList();
+			entityManager.getTransaction().commit();
+			if (featureMasters != null && featureMasters.size() > 0) {
+				// data present do a merge
+				for (FeatureMaster master : featureMasters) {
+					if (BLANKDATA.equalsIgnoreCase(bean.getDatasetSPLocation())) {
+						entityManager.getTransaction().begin();
+						List<DatasetMaster> dmtempList = entityManager.createQuery("select ds from DatasetMaster ds where ds.datasetname=:datasetname ")
+								.setParameter("datasetname", DUMMYDATASET).getResultList();
+						master.setDatasetmasters(dmtempList);
+						entityManager.merge(master);
+						entityManager.getTransaction().commit();
+					} else {
+						entityManager.getTransaction().begin();
+						List<DatasetMaster> tempList = entityManager.createQuery("select ds from DatasetMaster ds where ds.datasetname=:datasetname ")
+								.setParameter("datasetname", bean.getDatasetSPLocation()).getResultList();
+						master.setDatasetmasters(tempList);
+						entityManager.merge(master);
+						entityManager.getTransaction().commit();
+					}
+				}
+			} else {
+				// new feature data // do insert
+				// Feature not having any data set
+				// associate with dummy dataset
+				if (BLANKDATA.equalsIgnoreCase(bean.getDatasetSPLocation())) {
+					entityManager.getTransaction().begin();
+					List<DatasetMaster> dmtempList = entityManager.createQuery("select ds from DatasetMaster ds where ds.datasetname=:datasetname ")
+							.setParameter("datasetname", DUMMYDATASET).getResultList();
+					FeatureMaster feature = new FeatureMaster();
+					fsprimaryKey = fsprimaryKey + 1;
+					feature.setFeatureid(fsprimaryKey);
+					feature.setFeatureset(bean.getID());
+					feature.setDatasetmasters(dmtempList);
+					feature.setCreatedby(loginManagedBean.getUserName());
+					feature.setUpdatedby(loginManagedBean.getUserName());
+					feature.setCreationdate(new Timestamp(new Date().getTime()));
+					feature.setUpdatedate(new Timestamp(new Date().getTime()));
+					feature.setStatus("ACT");
+					entityManager.persist(feature);
+					entityManager.getTransaction().commit();
+				} else {
+					entityManager.getTransaction().begin();
+					List<DatasetMaster> tempList = entityManager.createQuery("select ds from DatasetMaster ds where ds.datasetname=:datasetname ")
+							.setParameter("datasetname", bean.getDatasetSPLocation()).getResultList();
+					FeatureMaster feature = new FeatureMaster();
+					fsprimaryKey = fsprimaryKey + 1;
+					feature.setFeatureid(fsprimaryKey);
+					feature.setFeatureset(bean.getID());
+					feature.setDatasetmasters(tempList);
+					feature.setCreatedby(loginManagedBean.getUserName());
+					feature.setUpdatedby(loginManagedBean.getUserName());
+					feature.setCreationdate(new Timestamp(new Date().getTime()));
+					feature.setUpdatedate(new Timestamp(new Date().getTime()));
+					feature.setStatus("ACT");
+					entityManager.persist(feature);
+					entityManager.getTransaction().commit();
+				}
+			}
+		}
+
+		// insert account master
+		entityManager.getTransaction().begin();
+		BigDecimal aslastId = (BigDecimal) entityManager.createNativeQuery("select NVL(MAX(accountid), 0) lastId from AccountMaster").getSingleResult();
+		entityManager.getTransaction().commit();
+		long asprimaryKey = aslastId.longValue();
+
+		for (ExcelReadBean bean : list) {
+			// check for account present as there will be multiple account.
+			entityManager.getTransaction().begin();
+			List<AccountMaster> data = entityManager.createQuery("select acn from AccountMaster acn where acn.accountname=:accountname")
+					.setParameter("accountname", bean.getAccountName()).getResultList();
+			entityManager.getTransaction().commit();
+			if (data != null && data.size() > 0) {
+				// account present
+				// merge data
+				for (AccountMaster master : data) {
+					if (BLANKDATA.equalsIgnoreCase(bean.getDatasetSPLocation())) {
+						entityManager.getTransaction().begin();
+						List<DatasetMaster> dmtempList = entityManager.createQuery("select ds from DatasetMaster ds where ds.datasetname=:datasetname ")
+								.setParameter("datasetname", DUMMYDATASET).getResultList();
+						master.setDatasetmastersList(dmtempList);
+						entityManager.merge(master);
+						entityManager.getTransaction().commit();
+					} else {
+						entityManager.getTransaction().begin();
+						List<DatasetMaster> tempList = entityManager.createQuery("select ds from DatasetMaster ds where ds.datasetname=:datasetname ")
+								.setParameter("datasetname", bean.getDatasetSPLocation()).getResultList();
+
+						master.setDatasetmastersList(tempList);
+						entityManager.merge(master);
+						entityManager.getTransaction().commit();
+					}
+				}
+
+			} else {
+				// insert data
+
+				if (BLANKDATA.equalsIgnoreCase(bean.getDatasetSPLocation())) {
+					entityManager.getTransaction().begin();
+					List<DatasetMaster> dmtempList = entityManager.createQuery("select ds from DatasetMaster ds where ds.datasetname=:datasetname ")
+							.setParameter("datasetname", DUMMYDATASET).getResultList();
+					AccountMaster accountMaster = new AccountMaster();
+					asprimaryKey = asprimaryKey + 1;
+					accountMaster.setAccountid(asprimaryKey);
+					accountMaster.setAccountname(bean.getAccountName());
+					accountMaster.setCreatedby(loginManagedBean.getUserName());
+					accountMaster.setUpdatedby(loginManagedBean.getUserName());
+					accountMaster.setCreationdate(new Timestamp(new Date().getTime()));
+					accountMaster.setUpdatedate(new Timestamp(new Date().getTime()));
+					accountMaster.setStatus("ACT");
+					accountMaster.setAccountsetid(BigDecimal.valueOf(accountMaster.getAccountid()));
+					accountMaster.setDatasetmastersList(dmtempList);
+					entityManager.persist(accountMaster);
+					entityManager.getTransaction().commit();
+
+				} else {
+
+					// now query from feature table to get list of features ids
+					entityManager.getTransaction().begin();
+					List<DatasetMaster> tempList = entityManager.createQuery("select ds from DatasetMaster ds where ds.datasetname=:datasetname ")
+							.setParameter("datasetname", bean.getDatasetSPLocation()).getResultList();
+
+					AccountMaster accountMaster = new AccountMaster();
+					asprimaryKey = asprimaryKey + 1;
+					accountMaster.setAccountid(asprimaryKey);
+					accountMaster.setAccountname(bean.getAccountName());
+					accountMaster.setCreatedby(loginManagedBean.getUserName());
+					accountMaster.setUpdatedby(loginManagedBean.getUserName());
+					accountMaster.setCreationdate(new Timestamp(new Date().getTime()));
+					accountMaster.setUpdatedate(new Timestamp(new Date().getTime()));
+					accountMaster.setStatus("ACT");
+					accountMaster.setAccountsetid(BigDecimal.valueOf(accountMaster.getAccountid()));
+					accountMaster.setDatasetmastersList(tempList);
+					entityManager.persist(accountMaster);
+					entityManager.getTransaction().commit();
+				}
+			}
+		}
+
+		entityManager.close();
+	}
+
 	@SuppressWarnings("unchecked")
 	private void insertDataSet(List<DatasetMaster> dataSetsList) {
 
@@ -279,7 +550,7 @@ public class FileUploadView  extends CommonFacesBean implements Serializable {
 	 * @param featuresList
 	 */
 	private void insertfeatureData(List<FeatureMaster> featuresList) {
-		
+
 		EntityManager entityManager = getEntitymanagerFromCurrent();
 		entityManager.getTransaction().begin();
 		for (FeatureMaster feature : featuresList) {
@@ -295,7 +566,7 @@ public class FileUploadView  extends CommonFacesBean implements Serializable {
 			} else {
 				feature.setBa("NA");
 			}
-			
+
 			List<DatasetMaster> tempList = entityManager.createQuery("select ds from DatasetMaster ds where ds.datasetid=:datasetid ")
 					.setParameter("datasetid", Long.valueOf(feature.getDatasetId())).getResultList();
 			feature.setDatasetmasters(tempList);
@@ -307,45 +578,45 @@ public class FileUploadView  extends CommonFacesBean implements Serializable {
 			entityManager.persist(feature);
 
 		}
-		
+
 		entityManager.getTransaction().commit();
 		entityManager.close();
 	}
 
-	
 	@SuppressWarnings("unchecked")
 	private void insertCustomerDataAndRelation(List<AccountMaster> accountsList) {
 
-		try{
+		try {
 
-		// insert account data in accounts table
-		EntityManager entityManager = getEntitymanagerFromCurrent();
-		entityManager.getTransaction().begin();
+			// insert account data in accounts table
+			EntityManager entityManager = getEntitymanagerFromCurrent();
+			entityManager.getTransaction().begin();
 
-		for(AccountMaster data : accountsList){
-			// now query from feature table to get list of features ids
-		List<DatasetMaster> tempList = entityManager.createQuery("select ds from DatasetMaster ds where ds.datasetid=:datasetid ")
-				.setParameter("datasetid", Long.valueOf(data.getDatasetId())).getResultList();
-			if (tempList != null && tempList.size() > 0) {
-				
-				data.setCreatedby("user");
-				data.setUpdatedby("user");
-				data.setCreationdate(new Timestamp(new Date().getTime()));
-				data.setUpdatedate(new Timestamp(new Date().getTime()));
-				data.setStatus("ACT");
-				data.setAccountsetid(BigDecimal.valueOf(data.getAccountid()));
-				data.setDatasetmastersList(tempList);
-				entityManager.persist(data);
+			for (AccountMaster data : accountsList) {
+				// now query from feature table to get list of features ids
+				List<DatasetMaster> tempList = entityManager.createQuery("select ds from DatasetMaster ds where ds.datasetid=:datasetid ")
+						.setParameter("datasetid", Long.valueOf(data.getDatasetId())).getResultList();
+				if (tempList != null && tempList.size() > 0) {
+
+					data.setCreatedby("user");
+					data.setUpdatedby("user");
+					data.setCreationdate(new Timestamp(new Date().getTime()));
+					data.setUpdatedate(new Timestamp(new Date().getTime()));
+					data.setStatus("ACT");
+					data.setAccountsetid(BigDecimal.valueOf(data.getAccountid()));
+					data.setDatasetmastersList(tempList);
+					entityManager.persist(data);
+				}
+
 			}
-		
-		}
-		entityManager.getTransaction().commit();
-		entityManager.close();
-		}catch(Exception exception){
+			entityManager.getTransaction().commit();
+			entityManager.close();
+		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
 
 	}
+
 	private Map<String, String> createUniqueMap(Map<String, String> tempMap) {
 		Map<String, String> map = new HashMap<String, String>();
 		map = tempMap;
@@ -384,6 +655,36 @@ public class FileUploadView  extends CommonFacesBean implements Serializable {
 	 */
 	public void setFeatureMasters(List<FeatureMaster> featureMasters) {
 		this.featureMasters = featureMasters;
+	}
+
+	/**
+	 * @return the excelReadBeansList
+	 */
+	public List<ExcelReadBean> getExcelReadBeansList() {
+		return excelReadBeansList;
+	}
+
+	/**
+	 * @param excelReadBeansList
+	 *            the excelReadBeansList to set
+	 */
+	public void setExcelReadBeansList(List<ExcelReadBean> excelReadBeansList) {
+		this.excelReadBeansList = excelReadBeansList;
+	}
+
+	/**
+	 * @return the loginManagedBean
+	 */
+	public LoginManagedBean getLoginManagedBean() {
+		return loginManagedBean;
+	}
+
+	/**
+	 * @param loginManagedBean
+	 *            the loginManagedBean to set
+	 */
+	public void setLoginManagedBean(LoginManagedBean loginManagedBean) {
+		this.loginManagedBean = loginManagedBean;
 	}
 
 }

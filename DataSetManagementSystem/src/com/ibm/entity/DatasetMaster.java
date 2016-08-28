@@ -1,79 +1,88 @@
 package com.ibm.entity;
 
 import java.io.Serializable;
-import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  * The persistent class for the DATASETMASTER database table.
  * 
  */
 @Entity
-@Table(name="DATASETMASTER")
-@NamedQuery(name="DatasetMaster.findAll", query="SELECT d FROM DatasetMaster d")
+@Table(name = "DATASETMASTER")
+@NamedQuery(name = "DatasetMaster.findAll", query = "SELECT d FROM DatasetMaster d")
 public class DatasetMaster implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(unique=true, nullable=false, precision=22)
+	@Column(unique = true, nullable = false, precision = 22)
 	private long datasetid;
 
-	@Column(nullable=false, length=40)
+	@Column(nullable = false, length = 40)
 	private String createdby;
 
-	@Column(nullable=false)
+	@Column(nullable = false)
 	private Timestamp creationdate;
 
-	@Column(nullable=false, length=250)
+	@Column(nullable = false, length = 250)
 	private String datasetname;
 
-	@Column(nullable=false, length=20)
+	@Column(nullable = false, length = 20)
 	private String status;
 
-	@Column(nullable=false)
+	@Column(nullable = false)
 	private Timestamp updatedate;
 
-	@Column(nullable=false, length=40)
+	@Column(nullable = false, length = 40)
 	private String updatedby;
-	
+
 	@Transient
 	private String selectedDataSetEvent;
-	
+
 	@Transient
 	private List<DatasetRunDefect> defects;
 
-	//bi-directional many-to-one association to DatasetAccountHistory
-	@OneToMany(mappedBy="datasetmaster")
+	// bi-directional many-to-one association to DatasetAccountHistory
+	@OneToMany(mappedBy = "datasetmaster")
 	private List<DatasetAccountHistory> datasetaccounthistories;
 
-	//bi-directional many-to-one association to DatasetFeatureHistory
-	@OneToMany(mappedBy="datasetmaster")
+	// bi-directional many-to-one association to DatasetFeatureHistory
+	@OneToMany(mappedBy = "datasetmaster")
 	private List<DatasetFeatureHistory> datasetfeaturehistories;
 
-	//bi-directional many-to-one association to DatasetHistory
-	@OneToMany(mappedBy="datasetmaster")
+	// bi-directional many-to-one association to DatasetHistory
+	@OneToMany(mappedBy = "datasetmaster")
 	private List<DatasetHistory> datasethistories;
 
-	//bi-directional many-to-many association to AccountMaster
-	@ManyToMany(mappedBy="datasetmastersList")
+	// bi-directional many-to-many association to AccountMaster
+	@ManyToMany(mappedBy = "datasetmastersList",fetch =FetchType.EAGER)
 	private List<AccountMaster> accountmasters;
 
-	//bi-directional many-to-one association to DatasetRun
-	@OneToMany(mappedBy="datasetmaster")
+	// bi-directional many-to-one association to DatasetRun
+	@OneToMany(mappedBy = "datasetmaster")
 	private List<DatasetRun> datasetruns;
 
-	//bi-directional many-to-many association to FeatureMaster
-	@ManyToMany(mappedBy="datasetmasters")
+	// bi-directional many-to-many association to FeatureMaster
+	@ManyToMany(mappedBy = "datasetmasters",fetch =FetchType.EAGER)
 	private List<FeatureMaster> featuremasters;
 
 	public DatasetMaster() {
 	}
 
-	public DatasetMaster(String selectedValue){
+	public DatasetMaster(String selectedValue) {
 		this.selectedDataSetEvent = selectedValue;
 	}
+
 	public long getDatasetid() {
 		return this.datasetid;
 	}
@@ -242,7 +251,8 @@ public class DatasetMaster implements Serializable {
 	}
 
 	/**
-	 * @param selectedDataSetEvent the selectedDataSetEvent to set
+	 * @param selectedDataSetEvent
+	 *            the selectedDataSetEvent to set
 	 */
 	public void setSelectedDataSetEvent(String selectedDataSetEvent) {
 		this.selectedDataSetEvent = selectedDataSetEvent;
@@ -256,7 +266,8 @@ public class DatasetMaster implements Serializable {
 	}
 
 	/**
-	 * @param defects the defects to set
+	 * @param defects
+	 *            the defects to set
 	 */
 	public void setDefects(List<DatasetRunDefect> defects) {
 		this.defects = defects;

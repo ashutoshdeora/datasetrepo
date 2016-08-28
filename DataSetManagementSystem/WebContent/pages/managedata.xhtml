@@ -22,7 +22,7 @@
 					style="margin-bottom:10px;">
 					<table style="width: 100%; border-spacing: 0;">
 						<tr style="vertical-align: top;">
-							<td><p:outputLabel value="Data Set:" /> <h:inputText
+							<td><p:outputLabel value="Data Set:" /> <h:outputText 
 									value="#{dataManagedBean.masterRecordFromselectedValue.datasetname}"
 									style="width:450px;" /></td>
 							<td><p:dataTable
@@ -32,6 +32,9 @@
 									scrollable="true"
 									value="#{dataManagedBean.masterRecordFromselectedValue.accountmasters}"
 									var="accn">
+									<p:column headerText="Account ID">
+									<h:outputText value="#{accn.accountsetid}" />
+									</p:column>
 									<p:column headerText="Account Name">
 										<h:outputText value="#{accn.accountname}" />
 									</p:column>
@@ -39,7 +42,7 @@
 							<td><p:dataTable
 									id="fea_tabl"
 									scrollHeight="150"
-									style="width:280px;"
+									style="width:120px;"
 									scrollable="true"
 									editable="true"
 									value="#{dataManagedBean.masterRecordFromselectedValue.featuremasters}"

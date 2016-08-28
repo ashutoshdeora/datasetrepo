@@ -27,7 +27,7 @@
 
 .column_style {
 	border: 1px solid #000000 !important;
-    text-align: center;
+	text-align: center;
 }
 
 .column_style_left {
@@ -122,7 +122,7 @@ ul.tab li a:hover {
 }
 
 /* Create an active/current tablink class */
-ul.tab li a:focus, .active {
+ul.tab li a:focus,.active {
 	background-color: #28A8E4;
 }
 
@@ -166,57 +166,55 @@ ul.tab li a:focus, .active {
 	width: 32px;
 }
 
-.steps_style{
+.steps_style {
 	background: #186ba0 none repeat scroll 0 0 !important;
-    border: 1px solid #156090;
-    color: #fff;
-    
+	border: 1px solid #156090;
+	color: #fff;
 }
 
-.column_1_style{
+.column_1_style {
 	border: 1px solid transparent;
 	text-align: center;
 }
 
-.column_2_style{
+.column_2_style {
 	text-align: center;
 }
 
-.column_3_style{
+.column_3_style {
 	width: 57%;
 	text-align: center;
 }
 
-.transparent_col{
-	border: 1px solid transparent!important;
+.transparent_col {
+	border: 1px solid transparent !important;
 	text-align: center;
 }
 
-.row_style{
+.row_style {
 	background-color: #FFFFFF;
 }
 
 .grid_style .ui-widget-content {
-	border: 1px solid transparent!important;
+	border: 1px solid transparent !important;
 	background: transparent none repeat scroll 0 0;
 }
 
 .row_status_style_failed {
-	background-color: #ED6F82!important;
+	background-color: #ED6F82 !important;
 }
 
-.row_status_style_passed{
-	background-color: #A4DAFC!important;
+.row_status_style_passed {
+	background-color: #6FED80 !important;
 }
 
-.row_status_style_rrdy{
-	background-color: #6FED80!important;
+.row_status_style_rrdy {
+	background-color: #A4DAFC !important;
 }
 
 .defect_severity_crit_code {
-	background-color:#FF0000!important;
+	background-color: #FF0000 !important;
 }
-
 
 .custom_odd .ui-datatable-odd {
 	background: #FFFFFF none repeat scroll 0 0;
@@ -231,4 +229,3 @@ ul.tab li a:focus, .active {
 	color: #000000 !important;
 	font-family: verdana !important;
 }
-

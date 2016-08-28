@@ -14,42 +14,44 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
-
 /**
  * The persistent class for the DATASETRUN database table.
  * 
  */
 @Entity
-@Table(name="DATASETRUN")
-@NamedQuery(name="DatasetRun.findAll", query="SELECT d FROM DatasetRun d")
+@Table(name = "DATASETRUN")
+@NamedQuery(name = "DatasetRun.findAll", query = "SELECT d FROM DatasetRun d")
 public class DatasetRun implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@Id@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(unique=true, nullable=false, precision=22)
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(unique = true, nullable = false, precision = 22)
 	private long datasetrunid;
 
-	@Column(nullable=true, precision=22)
+	@Column(nullable = true, precision = 22)
 	private BigDecimal parentdatasetrunid;
 
-	@Column(nullable=false, length=2)
+	@Column(nullable = false, length = 2)
 	private String readyforrun;
 
-	@Column(nullable=false, length=40)
+	@Column(nullable = false, length = 40)
 	private String runby;
 
-	@Column(nullable=false, length=20)
+	@Column(nullable = false, length = 20)
 	private String runphase;
 
-	@Column(nullable=false, length=20)
+	@Column(nullable = false, length = 20)
 	private String runstatus;
 
-	@Column(nullable=false)
+	@Column(nullable = false)
 	private Timestamp runtime;
+	@Column(length = 2000, name = "DATASETRUNCOMMENT")
+	private String dataSetRunComment;
 
-	//bi-directional many-to-one association to DatasetMaster
+	// bi-directional many-to-one association to DatasetMaster
 	@ManyToOne
-	@JoinColumn(name="DATASETID", nullable=false)
+	@JoinColumn(name = "DATASETID", nullable = false)
 	private DatasetMaster datasetmaster;
 
 	public DatasetRun() {
@@ -117,6 +119,21 @@ public class DatasetRun implements Serializable {
 
 	public void setDatasetmaster(DatasetMaster datasetmaster) {
 		this.datasetmaster = datasetmaster;
+	}
+
+	/**
+	 * @return the dataSetRunComment
+	 */
+	public String getDataSetRunComment() {
+		return dataSetRunComment;
+	}
+
+	/**
+	 * @param dataSetRunComment
+	 *            the dataSetRunComment to set
+	 */
+	public void setDataSetRunComment(String dataSetRunComment) {
+		this.dataSetRunComment = dataSetRunComment;
 	}
 
 }

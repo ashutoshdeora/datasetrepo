@@ -1,0 +1,75 @@
+<ui:composition
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	template="/templates/template.xhtml">
+	<ui:define name="metadata">
+	</ui:define>
+	<ui:define name="content">
+		<h:form id="def_form">
+			<p:growl
+				id="growl"
+				showDetail="true" />
+			<h:panelGroup>
+				<p:dataTable
+					id="def_datatable"
+					value="#{defectDataManagedBean.datasetRunDefectsList}"
+					var="def"
+					rows="10"
+					paginator="true"
+					rowIndexVar="rowIndex"
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					rowsPerPageTemplate="10,20,50"
+					scrollable="true"
+					scrollWidth="100%"
+					tableStyleClass="datatable_styles"
+					rowStyleClass="column_style">
+					<f:facet name="header">
+						<h:outputText value="Defects Details" />
+						<!-- <div style="float: right">
+							<p:commandLink id="xls" ajax="false">
+								<p:graphicImage value="/resources/images/excel.png" />
+								<pe:exporter type="xlsx" target="def_datatable"
+									fileName="DefectDetailsResult" />
+							</p:commandLink>
+						</div> -->
+					</f:facet>
+					<p:column headerText="Sr No.">
+						<h:outputText value="#{rowIndex+1}" />
+					</p:column>
+					<p:column headerText="HPQC Defct ID">
+						<h:outputText value="#{def.hpqcdefectid}" />
+					</p:column>
+					<p:column headerText="Defect Sevrity">
+						<h:outputText value="#{def.defectsevrity}" />
+					</p:column>
+					<p:column
+						headerText="Status"
+						style="width:30%;">
+						<h:outputText value="#{def.defectstatus}" />
+					</p:column>
+					<p:column headerText="DataSet">
+						<h:dataTable
+							value="#{def.datasetRuns}"
+							var="dst">
+							<h:column>
+								<h:outputText value="#{dst.datasetmaster.datasetname}" />
+							</h:column>
+						</h:dataTable>
+					</p:column>
+				</p:dataTable>
+			</h:panelGroup>
+			<!-- <h:panelGroup>
+				<p:chart type="bar" model="#{defectManagedBean.chartView.barModel}"
+					style="height:300px">
+					<p:ajax event="itemSelect"
+						listener="#{defectManagedBean.chartView.itemSelect}"
+						update="growl" />
+				</p:chart>
+				<p:chart type="bar" model="#{defectManagedBean.chartView.horizontalBarModel}" style="height:300px"/>
+			</h:panelGroup> -->
+		</h:form>
+	</ui:define>
+</ui:composition>

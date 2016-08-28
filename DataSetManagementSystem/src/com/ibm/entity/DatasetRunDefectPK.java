@@ -1,7 +1,11 @@
 package com.ibm.entity;
 
 import java.io.Serializable;
-import javax.persistence.*;
+
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 
 /**
  * The primary key class for the DATASETRUNDEFECT database table.
@@ -9,27 +13,31 @@ import javax.persistence.*;
  */
 @Embeddable
 public class DatasetRunDefectPK implements Serializable {
-	//default serial version id, required for serializable classes.
+	// default serial version id, required for serializable classes.
 	private static final long serialVersionUID = 1L;
 
-	@Column(unique=true, nullable=false, precision=22)
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@Column(unique = true, nullable = false, precision = 22)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long rundefectid;
 
-	@Column(unique=true, nullable=false, precision=22)
+	@Column(unique = true, nullable = false, precision = 22)
 	private long datasetrunid;
 
 	public DatasetRunDefectPK() {
 	}
+
 	public long getRundefectid() {
 		return this.rundefectid;
 	}
+
 	public void setRundefectid(long rundefectid) {
 		this.rundefectid = rundefectid;
 	}
+
 	public long getDatasetrunid() {
 		return this.datasetrunid;
 	}
+
 	public void setDatasetrunid(long datasetrunid) {
 		this.datasetrunid = datasetrunid;
 	}
@@ -41,10 +49,8 @@ public class DatasetRunDefectPK implements Serializable {
 		if (!(other instanceof DatasetRunDefectPK)) {
 			return false;
 		}
-		DatasetRunDefectPK castOther = (DatasetRunDefectPK)other;
-		return 
-			(this.rundefectid == castOther.rundefectid)
-			&& (this.datasetrunid == castOther.datasetrunid);
+		DatasetRunDefectPK castOther = (DatasetRunDefectPK) other;
+		return (this.rundefectid == castOther.rundefectid) && (this.datasetrunid == castOther.datasetrunid);
 	}
 
 	public int hashCode() {
@@ -52,7 +58,7 @@ public class DatasetRunDefectPK implements Serializable {
 		int hash = 17;
 		hash = hash * prime + ((int) (this.rundefectid ^ (this.rundefectid >>> 32)));
 		hash = hash * prime + ((int) (this.datasetrunid ^ (this.datasetrunid >>> 32)));
-		
+
 		return hash;
 	}
 }

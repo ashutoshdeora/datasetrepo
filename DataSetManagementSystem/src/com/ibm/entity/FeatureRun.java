@@ -9,37 +9,34 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-
 
 /**
  * The persistent class for the FEATURERUN database table.
  * 
  */
 @Entity
-@Table(name="FEATURERUN")
-@NamedQuery(name="FeatureRun.findAll", query="SELECT f FROM FeatureRun f")
+@Table(name = "FEATURERUN")
+@NamedQuery(name = "FeatureRun.findAll", query = "SELECT f FROM FeatureRun f")
 public class FeatureRun implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@Id@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(unique=true, nullable=false, precision=22)
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(unique = true, nullable = false, precision = 22)
 	private long featurerunid;
 
-	@Column(nullable=false, precision=22)
+	@Column(nullable = false, precision = 22)
 	private BigDecimal datasetrunid;
 
-	@Column(nullable=false, precision=22)
+	@Column(nullable = false, precision = 22)
 	private BigDecimal featuremasterid;
 
-	@Column(nullable=false, length=20)
+	@Column(nullable = false, length = 20)
 	private String status;
-	
+
 	@Transient
 	private List<DatasetRunDefect> listofDefects;
 
@@ -86,7 +83,8 @@ public class FeatureRun implements Serializable {
 	}
 
 	/**
-	 * @param listofDefects the listofDefects to set
+	 * @param listofDefects
+	 *            the listofDefects to set
 	 */
 	public void setListofDefects(List<DatasetRunDefect> listofDefects) {
 		this.listofDefects = listofDefects;

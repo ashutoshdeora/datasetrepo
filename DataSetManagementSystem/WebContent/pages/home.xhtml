@@ -212,13 +212,10 @@
 										<td colspan="2"><p:commandButton
 												value="Submit Data Set Run"
 												actionListener="#{dataSetRunManageBean.saveDataSetRun}"
-												update="dats_pnlg"></p:commandButton></td>
+												update="dats_pnlg,ds_run_pnlG"></p:commandButton></td>
 									</tr>
 								</table>
 							</p:panel>
-							
-							
-							
 							<p:panel
 								id="re_exe_panel"
 								header="Re Execute Data Set run"
@@ -237,7 +234,7 @@
 													<td><p:inputText
 															id="re_commentsText"
 															style="width:560px;"
-															value="#{dataSetRunManageBean.testScriptComments}" /></td>
+															value="#{dataSetRunManageBean.selectedDataSetRunBean.datasetRun.dataSetRunComment}" /></td>
 												</tr>
 												<tr>
 													<td><h:outputLabel value="Select Data Phase" /></td>
@@ -414,12 +411,20 @@
 												<td><h:outputText value="#{dssr.datasetRun.runtime}" /></td>
 											</tr>
 											<tr>
+												<td><h:outputLabel value="DataSet Run Env" /></td>
+												<td><h:outputText value="#{dssr.datasetRun.runphase}" /></td>
+											</tr>
+											<tr>
+												<td><h:outputLabel value="DataSet Run Comments" /></td>
+												<td><h:outputText value="#{dssr.datasetRun.dataSetRunComment}" /></td>
+											</tr>
+											<tr>
 												<td colspan="2"><p:commandButton
 														value="Ready For Re-Execution"
 														actionListener="#{dataSetRunManageBean.reExecuteDataSet}"
 														type="submit"
 														update="ds_runForm:ds_run_pnlG"
-														rendered="true">
+														rendered="#{dssr.readyForReExecute}">
 														<f:attribute
 															name="selDsrb"
 															value="#{dssr}" />
@@ -465,7 +470,7 @@
 										<h:column>
 											<h:dataTable
 												value="#{fsr.datasetRunDefectsList}"
-												rendered="#{fsr.datasetRunDefectsList.size() gt 0}"
+												
 												var="defs"
 												style="border: none;"
 												cellpadding="0"

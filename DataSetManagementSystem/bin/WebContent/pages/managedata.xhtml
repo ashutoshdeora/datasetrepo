@@ -1,0 +1,125 @@
+<ui:composition
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	template="/templates/template.xhtml">
+	<ui:define name="metadata">
+	</ui:define>
+	<ui:define name="content">
+		<h:form id="dm_frm">
+			<p:growl
+				id="msgs"
+				showDetail="true"
+				autoUpdate="true"
+				showSummary="false" />
+			<h:panelGroup id="dsPnlG">
+				<p:panel
+					rendered="#{dataManagedBean.showupdatePanel}"
+					id="ds_run_panel"
+					header="Select a Data Set for Update"
+					style="margin-bottom:10px;">
+					<table style="width: 100%; border-spacing: 0;">
+						<tr style="vertical-align: top;">
+							<td><p:outputLabel value="Data Set:" /> <h:inputText
+									value="#{dataManagedBean.masterRecordFromselectedValue.datasetname}"
+									style="width:450px;" /></td>
+							<td><p:dataTable
+									id="acc_tbl"
+									scrollHeight="150"
+									style="width:280px;"
+									scrollable="true"
+									value="#{dataManagedBean.masterRecordFromselectedValue.accountmasters}"
+									var="accn">
+									<p:column headerText="Account Name">
+										<h:outputText value="#{accn.accountname}" />
+									</p:column>
+								</p:dataTable></td>
+							<td><p:dataTable
+									id="fea_tabl"
+									scrollHeight="150"
+									style="width:280px;"
+									scrollable="true"
+									editable="true"
+									value="#{dataManagedBean.masterRecordFromselectedValue.featuremasters}"
+									var="fea">
+									<p:column headerText="Feature Set ID">
+										<h:outputText value="#{fea.featureset}" />
+									</p:column>
+								</p:dataTable></td>
+						</tr>
+						<tr>
+							<td colspan="2"><p:commandButton
+									value="Submit Updated Data Set"
+									update="dsPnlG,dt_pnlG"
+									actionListener="#{dataManagedBean.saveDataSet}" /></td>
+						</tr>
+					</table>
+				</p:panel>
+			</h:panelGroup>
+			<h:panelGroup id="dt_pnlG">
+				<p:dataTable
+					value="#{dataManagedBean.datasetmastersList}"
+					var="dsl"
+					rows="10"
+					paginator="true"
+					rowIndexVar="rowIndex"
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					rowsPerPageTemplate="10,20,50"
+					scrollable="true"
+					scrollWidth="100%"
+					tableStyleClass="datatable_styles"
+					rowStyleClass="column_style">
+					<p:column
+						headerText="DataSet ID"
+						sortBy="#{dsl.datasetid}"
+						width="50">
+						<p:commandLink
+							actionListener="#{dataManagedBean.populateSelDset}"
+							update=":dm_frm:dsPnlG,:dm_frm:ds_run_panel">
+							<h:outputText value="#{dsl.datasetid}" />
+							<f:attribute
+								name="selectedDs"
+								value="#{dsl}" />
+						</p:commandLink>
+					</p:column>
+					<p:column
+						headerText="DataSet Name"
+						sortBy="#{dsl.datasetname}"
+						width="400">
+						<h:outputText value="#{dsl.datasetname}" />
+					</p:column>
+					<p:column
+						headerText="Accounts"
+						width="300">
+						<p:dataTable
+							scrollHeight="80"
+							scrollable="true"
+							value="#{dsl.accountmasters}"
+							rowStyleClass="custom_odd custom_even"
+							var="accn">
+							<p:column>
+								<h:outputText value="#{accn.accountname}" />
+							</p:column>
+						</p:dataTable>
+					</p:column>
+					<p:column
+						headerText="Features"
+						width="300">
+						<p:dataTable
+							scrollHeight="80"
+							scrollable="true"
+							value="#{dsl.featuremasters}"
+							rowStyleClass="custom_odd custom_even"
+							var="fea">
+							<p:column>
+								<h:outputText value="#{fea.featureset}" />
+							</p:column>
+						</p:dataTable>
+					</p:column>
+				</p:dataTable>
+			</h:panelGroup>
+		</h:form>
+	</ui:define>
+</ui:composition>

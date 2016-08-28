@@ -1,0 +1,32 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	template="/templates/template.xhtml">
+	<ui:define name="metadata">
+	</ui:define>
+	<ui:define name="content">
+
+
+		<h:form>
+			<div style="bottom: 50%; left: 50%; position: fixed; top: 50%;">
+				<p:panel>
+					<h:panelGrid columns="2">
+						<p:outputLabel id="usr_lbl" value="User Name:" for="user_id" />
+						<h:inputText id="user_id" value="#{loginManagedBean.userName}"
+							required="true" requiredMessage="User Name Please!! " />
+
+						<p:outputLabel id="pass_lbl" value="Password:" for="pass_id" />
+						<h:inputSecret id="pass_id" value="#{loginManagedBean.password}"
+							required="true" requiredMessage="User Password Please!! " />
+
+						<p:commandButton
+							action="#{loginManagedBean.checkuserloginWithRole}" value="Login" />
+
+					</h:panelGrid>
+				</p:panel>
+			</div>
+		</h:form>
+	</ui:define>
+</ui:composition>

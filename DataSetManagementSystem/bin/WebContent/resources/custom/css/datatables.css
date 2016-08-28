@@ -1,0 +1,234 @@
+@CHARSET "ISO-8859-1";
+
+.datatable_styles {
+	font-family: sans-serif;
+	color: #000000 !important;
+	border-color: #000000;
+}
+
+.ui-datatable-odd {
+	background: #FFFFFF none repeat scroll 0 0;
+	border: 1px solid;
+	color: #000000 !important;
+	font-family: verdana;
+}
+
+.ui-datatable-even {
+	background: #D5E0E5 none repeat scroll 0 0;
+	border: 1px solid;
+	color: #000000 !important;
+	font-family: verdana !important;
+}
+
+.anchor_style {
+	color: #000000 !important;
+	font-family: calibri !important;
+}
+
+.column_style {
+	border: 1px solid #000000 !important;
+    text-align: center;
+}
+
+.column_style_left {
+	text-align: left !important;
+}
+
+.plik_style {
+	text-decoration: none !important;
+	list-style: none !important;
+	color: #000000;
+	font-family: verdana !important;
+	background-color: transparent;
+	margin-bottom: 2px;
+}
+
+.list_style {
+	list-style: none !important;
+	margin-bottom: 10px;
+	text-align: left;
+}
+
+.content_style .ui-widget-content {
+	background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
+	border: 0 none;
+	color: #4f4f4f;
+}
+
+.table_column_style {
+	vertical-align: top;
+}
+
+.table_column_style1 {
+	vertical-align: top;
+}
+
+.body_style {
+	font-size: 11px !important;
+}
+
+.header_style_template {
+	background-color: #9626FF;
+	font-family: calibri;
+	color: #FFFFFF;
+	padding: 1px;
+	height: 120px;
+	margin-bottom: 30px;
+}
+
+.header_style_font {
+	background: transparent none repeat scroll 0 0;
+	border: 0 none;
+	color: #ffffff;
+	font-size: 4em;
+	text-align: center;
+}
+
+.table_style {
+	width: 100%;
+	border-spacing: 0;
+	border-collapse: 0
+}
+
+ul.tab {
+	background-color: #28a8e4;
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+
+/* Float the list items side by side */
+ul.tab li {
+	float: left;
+}
+
+/* Style the links inside the list items */
+ul.tab li a {
+	background-color: #3d3d3d;
+	border-top-left-radius: 3px;
+	border-top-right-radius: 20px;
+	color: #ffffff;
+	display: inline-block;
+	font-family: Segoe UI, Arial, sans-serif;
+	padding: 14px 16px;
+	text-align: center;
+	text-decoration: none;
+	transition: all 0.3s ease 0s;
+}
+
+/* Change background color of links on hover */
+ul.tab li a:hover {
+	background-color: #28A8E4;
+}
+
+/* Create an active/current tablink class */
+ul.tab li a:focus, .active {
+	background-color: #28A8E4;
+}
+
+.ui-steps .ui-steps-item {
+	width: 13%;
+	opacity: 1;
+}
+
+.ui-state-highlight {
+	text-shadow: none !important;
+}
+
+.ui-steps.custom {
+	margin-bottom: 30px;
+	margin-top: 30px;
+}
+
+.ui-steps.custom .ui-steps-item .ui-menuitem-link {
+	height: 5px;
+	padding: 0 1em;
+}
+
+.ui-steps.custom .ui-steps-item .ui-steps-number {
+	background-color: #0081c2;
+	color: #FFFFFF;
+	display: inline-block;
+	width: 20px;
+	border-radius: 10px;
+	margin-top: -10px;
+}
+
+.ui-steps .ui-steps-number {
+	font-size: 150% !important;
+}
+
+.ui-steps-title {
+	color: #000000;
+}
+
+.cell_editor_style {
+	width: 32px;
+}
+
+.steps_style{
+	background: #186ba0 none repeat scroll 0 0 !important;
+    border: 1px solid #156090;
+    color: #fff;
+    
+}
+
+.column_1_style{
+	border: 1px solid transparent;
+	text-align: center;
+}
+
+.column_2_style{
+	text-align: center;
+}
+
+.column_3_style{
+	width: 57%;
+	text-align: center;
+}
+
+.transparent_col{
+	border: 1px solid transparent!important;
+	text-align: center;
+}
+
+.row_style{
+	background-color: #FFFFFF;
+}
+
+.grid_style .ui-widget-content {
+	border: 1px solid transparent!important;
+	background: transparent none repeat scroll 0 0;
+}
+
+.row_status_style_failed {
+	background-color: #ED6F82!important;
+}
+
+.row_status_style_passed{
+	background-color: #A4DAFC!important;
+}
+
+.row_status_style_rrdy{
+	background-color: #6FED80!important;
+}
+
+.defect_severity_crit_code {
+	background-color:#FF0000!important;
+}
+
+
+.custom_odd .ui-datatable-odd {
+	background: #FFFFFF none repeat scroll 0 0;
+	border: 1px solid;
+	color: #000000 !important;
+	font-family: verdana;
+}
+
+.custom_even.ui-datatable-even {
+	background: #E2D5E2 none repeat scroll 0 0;
+	border: 1px solid;
+	color: #000000 !important;
+	font-family: verdana !important;
+}
+

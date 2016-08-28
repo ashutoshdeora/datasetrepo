@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.0"
+	xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+	<persistence-unit name="tmorcl" transaction-type="RESOURCE_LOCAL">
+		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+		<class>com.ibm.entity.AccountMaster</class>
+		<class>com.ibm.entity.AccountRun</class>
+		<class>com.ibm.entity.DatasetAccountHistory</class>
+		<class>com.ibm.entity.DatasetFeatureHistory</class>
+		<class>com.ibm.entity.DatasetHistory</class>
+		<class>com.ibm.entity.DatasetMaster</class>
+		<class>com.ibm.entity.DatasetRun</class>
+		<class>com.ibm.entity.DatasetRunDefect</class>
+		<class>com.ibm.entity.DatasetRunDefectPK</class>
+		<class>com.ibm.entity.FeatureMaster</class>
+		<class>com.ibm.entity.FeatureRun</class>
+		<class>com.ibm.entity.UserDetail</class>
+		<class>com.ibm.entity.MasterData</class>
+		<properties>
+			<property name="javax.persistence.jdbc.driver" value="oracle.jdbc.OracleDriver" />
+			<property name="javax.persistence.jdbc.url" value="jdbc:oracle:thin:@localhost:1521:xe" />
+			<property name="javax.persistence.jdbc.user" value="projectUser" />
+			<property name="javax.persistence.jdbc.password" value="welcome1" />
+			<property name="eclipselink.logging.level" value="FINE" />
+			<property name="eclipselink.logging.parameters" value="true" />
+			<!-- <property name="eclipselink.ddl-generation" value="create-or-extend-tables"/> -->
+			<property name="eclipselink.cache.type.default" value="NONE" />
+			<property name="eclipselink.flush-clear.cache" value="Drop" />
+		</properties>
+	</persistence-unit>
+</persistence>

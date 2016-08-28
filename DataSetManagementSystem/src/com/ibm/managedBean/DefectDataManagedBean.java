@@ -6,12 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 
 import org.apache.log4j.Logger;
 
@@ -29,10 +28,9 @@ public class DefectDataManagedBean extends CommonFacesBean implements Serializab
 	final static Logger logger = Logger.getLogger(DefectDataManagedBean.class);
 	private List<DatasetRunDefect> datasetRunDefectsList;
 
-
 	@PostConstruct
 	private void populateAllDefects() {
-
+		logger.debug("init called");
 		try {
 
 			FacesContext context = FacesContext.getCurrentInstance();
@@ -44,9 +42,13 @@ public class DefectDataManagedBean extends CommonFacesBean implements Serializab
 			}
 
 		} catch (Exception exception) {
+			logger.error(exception);
 			exception.printStackTrace();
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Application/Data Error", exception.getLocalizedMessage());
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return;
 		}
-
+		logger.debug("init ended");
 	}
 
 	@SuppressWarnings("unchecked")
@@ -92,8 +94,6 @@ public class DefectDataManagedBean extends CommonFacesBean implements Serializab
 		entityManager.close();
 		return temp;
 	}
-
-
 
 	/**
 	 * @return the datasetRunDefectsList

@@ -11,8 +11,6 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 
 import org.apache.log4j.Logger;
 
@@ -42,8 +40,6 @@ public class DataManagedBean extends CommonFacesBean implements Serializable {
 		setDatasetmastersList(populateDataSet());
 	}
 
-	
-
 	@SuppressWarnings("unchecked")
 	private List<DatasetMaster> populateDataSet() {
 		EntityManager entityManager = getEntitymanagerFromCurrent();
@@ -54,15 +50,7 @@ public class DataManagedBean extends CommonFacesBean implements Serializable {
 
 		entityManager.getTransaction().commit();
 		entityManager.close();
-
-		List<DatasetMaster> tempList = new ArrayList<DatasetMaster>();
-		for (int i = 1; i < temp.size(); i++) {
-
-			if (temp.get(i).getDatasetid() < 18) {
-				tempList.add(temp.get(i));
-			}
-		}
-		return tempList;
+		return temp;
 	}
 
 	public void populateSelDset(ActionEvent actionEvent) {
@@ -70,7 +58,7 @@ public class DataManagedBean extends CommonFacesBean implements Serializable {
 			DatasetMaster bean = (DatasetMaster) actionEvent.getComponent().getAttributes().get("selectedDs");
 			masterRecordFromselectedValue = new DatasetMaster();
 			masterRecordFromselectedValue = bean;
-			showupdatePanel=true;
+			showupdatePanel = true;
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Application/Data Error", exception.getLocalizedMessage());
@@ -78,11 +66,9 @@ public class DataManagedBean extends CommonFacesBean implements Serializable {
 		}
 	}
 
-	
-	public void saveDataSet(ActionEvent actionEvent){
-		showupdatePanel =false;
+	public void saveDataSet(ActionEvent actionEvent) {
+		showupdatePanel = false;
 	}
-	
 
 	/**
 	 * @return the accountmastersList
@@ -144,8 +130,6 @@ public class DataManagedBean extends CommonFacesBean implements Serializable {
 		this.masterRecordFromselectedValue = masterRecordFromselectedValue;
 	}
 
-
-
 	/**
 	 * @return the showupdatePanel
 	 */
@@ -153,10 +137,9 @@ public class DataManagedBean extends CommonFacesBean implements Serializable {
 		return showupdatePanel;
 	}
 
-
-
 	/**
-	 * @param showupdatePanel the showupdatePanel to set
+	 * @param showupdatePanel
+	 *            the showupdatePanel to set
 	 */
 	public void setShowupdatePanel(boolean showupdatePanel) {
 		this.showupdatePanel = showupdatePanel;

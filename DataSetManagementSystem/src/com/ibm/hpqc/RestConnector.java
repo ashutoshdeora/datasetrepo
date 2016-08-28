@@ -15,9 +15,9 @@ import java.util.Set;
  * This class keeps the state of the connection for the examples. This class is
  * a thus sharing state singleton. All examples get the instance in their
  * default constructors - (cookies, server url).
- *
+ * 
  * Some simple methods are implemented to get commonly used paths.
- *
+ * 
  */
 public class RestConnector {
 

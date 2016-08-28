@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+	<center>
+	
+		<h:outputLabel value="DataSet Run Management" styleClass="header_style_font"/>	
+	</center>
+	<h:form>
+		<h:panelGroup >
+			<table class="table_style">
+				<tr>
+					<td><ul class="tab">
+							<li ><a href="../pages/home.xhtml" class="tablinks">Home</a></li>
+							<li><a href="../pages/datasetpage.xhtml" class="tablinks">Data Set</a></li>
+							<li><a href="../pages/featurespage.xhtml" class="tablinks">Features</a></li>
+							<li><a href="../pages/defectspage.xhtml" class="tablinks">Defects</a></li>
+							<li><a href="../pages/accountspage.xhtml" class="tablinks">Account</a></li>
+							<li><a href="../pages/managedata.xhtml" class="tablinks">Manage Data</a></li>
+						</ul></td>
+					<td><h:outputText value="#{loginManagedBean.userName}" /></td>
+					<td><p:commandButton action="#{loginManagedBean.logout}"
+							value="Logout" /></td>
+				</tr>
+			</table>
+		</h:panelGroup>
+	</h:form>
+
+</ui:composition>

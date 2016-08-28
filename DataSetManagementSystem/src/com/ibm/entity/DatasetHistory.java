@@ -1,42 +1,47 @@
 package com.ibm.entity;
 
 import java.io.Serializable;
-import javax.persistence.*;
 import java.sql.Timestamp;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
 /**
  * The persistent class for the DATASETHISTORY database table.
  * 
  */
 @Entity
-@Table(name="DATASETHISTORY")
-@NamedQuery(name="DatasetHistory.findAll", query="SELECT d FROM DatasetHistory d")
+@Table(name = "DATASETHISTORY")
+@NamedQuery(name = "DatasetHistory.findAll", query = "SELECT d FROM DatasetHistory d")
 public class DatasetHistory implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(unique=true, nullable=false, precision=22)
+	@Column(unique = true, nullable = false, precision = 22)
 	private long datasethistoryid;
-	@Column(nullable=false, length=250)
+	@Column(nullable = false, length = 250)
 	private String datasetname;
 
-	@Column(nullable=false, length=40)
+	@Column(nullable = false, length = 40)
 	private String createdby;
 
-	@Column(nullable=false)
+	@Column(nullable = false)
 	private Timestamp creationdate;
 
-
-	@Column(nullable=false)
+	@Column(nullable = false)
 	private Timestamp updatedate;
 
-	@Column(nullable=false, length=40)
+	@Column(nullable = false, length = 40)
 	private String updatedby;
 
-	//bi-directional many-to-one association to DatasetMaster
+	// bi-directional many-to-one association to DatasetMaster
 	@ManyToOne
-	@JoinColumn(name="DATASETID", nullable=false)
+	@JoinColumn(name = "DATASETID", nullable = false)
 	private DatasetMaster datasetmaster;
 
 	public DatasetHistory() {

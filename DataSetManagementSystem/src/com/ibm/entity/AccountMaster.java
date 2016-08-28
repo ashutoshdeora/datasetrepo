@@ -1,10 +1,22 @@
 package com.ibm.entity;
 
 import java.io.Serializable;
-import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  * The persistent class for the ACCOUNTMASTER database table.
@@ -40,20 +52,17 @@ public class AccountMaster implements Serializable {
 
 	@Column(nullable = false, length = 40)
 	private String updatedby;
-	
+
 	@Transient
 	private String datasetId;
-
-
 
 	// bi-directional many-to-one association to DatasetAccountHistory
 	@OneToMany(mappedBy = "accountmaster")
 	private List<DatasetAccountHistory> datasetaccounthistories;
 
 	// bi-directional many-to-many association to DatasetMaster
-	@ManyToMany
-	@JoinTable(name = "DATASETACCOUNT", joinColumns = { @JoinColumn(name = "ACCOUNTMASTERID", nullable = false) }, inverseJoinColumns = {
-			@JoinColumn(name = "DATASETMASTERID", nullable = false) })
+	@ManyToMany(fetch = FetchType.LAZY, cascade=CascadeType.MERGE)
+	@JoinTable(name = "DATASETACCOUNT", joinColumns = { @JoinColumn(name = "ACCOUNTMASTERID", nullable = false) }, inverseJoinColumns = { @JoinColumn(name = "DATASETMASTERID", nullable = false) })
 	private List<DatasetMaster> datasetmastersList;
 
 	public AccountMaster() {
@@ -145,8 +154,6 @@ public class AccountMaster implements Serializable {
 		return datasetaccounthistory;
 	}
 
-	
-
 	/**
 	 * @return the datasetId
 	 */
@@ -155,7 +162,8 @@ public class AccountMaster implements Serializable {
 	}
 
 	/**
-	 * @param datasetId the datasetId to set
+	 * @param datasetId
+	 *            the datasetId to set
 	 */
 	public void setDatasetId(String datasetId) {
 		this.datasetId = datasetId;
@@ -169,7 +177,8 @@ public class AccountMaster implements Serializable {
 	}
 
 	/**
-	 * @param datasetmastersList the datasetmastersList to set
+	 * @param datasetmastersList
+	 *            the datasetmastersList to set
 	 */
 	public void setDatasetmastersList(List<DatasetMaster> datasetmastersList) {
 		this.datasetmastersList = datasetmastersList;

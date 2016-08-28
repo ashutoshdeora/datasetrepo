@@ -14,7 +14,7 @@ public class Base64Encoder {
 
 	/**
 	 * Translates the specified byte array into Base64 string.
-	 *
+	 * 
 	 * @param buf
 	 *            the byte array (not null)
 	 * @return the translated Base64 string (not null)
