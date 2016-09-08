@@ -1,0 +1,412 @@
+<!--
+/*******************************************************************************
+ * Licensed Materials - Property of IBM
+ * (c) Copyright IBM Corporation 2010, 2012. All Rights Reserved. 
+ * 
+ * Note to U.S. Government Users Restricted Rights:  Use, 
+ * duplication or disclosure restricted by GSA ADP Schedule 
+ * Contract with IBM Corp.
+ *******************************************************************************/
+Change log
+
+Date:			Description:
+-->
+<project name="Build DSM application" default="all">
+
+	<!-- *** Set all properties, classpath, etc ... -->
+
+	<property name="keydir" value="D:\build\rsa-bld\keys" />
+	<propertyfile file="${keydir}\rsaBuild.properties" />
+
+	<echo message="Setting variables " />
+
+	<property name="DSMEarfilename" value="Dsm_${buildLabel}.ear" />
+
+	<property name="loadDir" value="${basedir}/../.." />
+	<property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter" />
+	<property name="build.debuglevel" value="lines,vars,source" />
+	<property name="destdir" value="${loadDir}/build" />
+	<property name="destdir.bin" value="${loadDir}/build/bin" />
+	<property name="destdir.distro" value="${loadDir}/build/distro" />
+
+	<property name="desturl.distro" value="file://corpbuild.corp.unifirst.com/rsabld/${buildStream}/${buildLabel}/build/distro/" />
+
+	<property name="destdir.distro.libs" value="${loadDir}/build/distro/libs" />
+	<property name="compilelog" value="${destdir}/compile.xml" />
+
+	<echo message="loadDir=${loadDir}" />
+
+	<delete dir="${destdir}" />
+	<mkdir dir="${destdir}" />
+	<mkdir dir="${destdir.bin}" />
+	<mkdir dir="${destdir.distro}" />
+	<mkdir dir="${destdir.distro.libs}" />
+
+
+
+	<!-- *** Start Classpath *** -->
+	<property environment="env" />
+	<property name="DataSetManagementSystem.location" value="${loadDir}/DataSetManagementSystem" />
+
+
+	<property name="debuglevel" value="source,lines,vars" />
+	<property name="target" value="1.6" />
+	<property name="source" value="1.6" />
+
+
+
+
+	<path id="WebLogic System Libraries.libraryclasspath">
+		<pathelement location="${weblogic}/modules/javax.persistence_1.1.0.0_2-0.jar" />
+		<pathelement location="${weblogic}/modules/com.oracle.jpa2support_1.0.0.0_2-1.jar" />
+		<pathelement location="${weblogic}/wlserver_10.3/server/lib/api.jar" />
+		<pathelement location="${weblogic}/wlserver_10.3/server/lib/weblogic.jar" />
+		<pathelement location="${weblogic}/modules/glassfish.jstl_1.2.0.1.jar" />
+		<pathelement location="${weblogic}/modules/javax.jsf_1.1.0.0_1-2.jar" />
+		<pathelement location="${weblogic}/modules/javax.ejb_3.0.1.jar" />
+		<pathelement location="${weblogic}/modules/javax.enterprise.deploy_1.2.jar" />
+		<pathelement location="${weblogic}/modules/javax.interceptor_1.0.jar" />
+		<pathelement location="${weblogic}/modules/javax.jms_1.1.1.jar" />
+		<pathelement location="${weblogic}/modules/javax.jsp_1.3.0.0_2-1.jar" />
+		<pathelement location="${weblogic}/modules/javax.jws_2.0.jar" />
+		<pathelement location="${weblogic}/modules/javax.activation_1.1.0.0_1-1.jar" />
+		<pathelement location="${weblogic}/modules/javax.mail_1.1.0.0_1-4-1.jar" />
+		<pathelement location="${weblogic}/modules/javax.xml.soap_1.3.1.0.jar" />
+		<pathelement location="${weblogic}/modules/javax.xml.rpc_1.2.1.jar" />
+		<pathelement location="${weblogic}/modules/javax.xml.ws_2.1.1.jar" />
+		<pathelement location="${weblogic}/modules/javax.management.j2ee_1.0.jar" />
+		<pathelement location="${weblogic}/modules/javax.resource_1.5.1.jar" />
+		<pathelement location="${weblogic}/modules/javax.servlet_1.0.0.0_2-5.jar" />
+		<pathelement location="${weblogic}/modules/javax.transaction_1.0.0.0_1-1.jar" />
+		<pathelement location="${weblogic}/modules/javax.xml.stream_1.1.1.0.jar" />
+		<pathelement location="${weblogic}/modules/javax.security.jacc_1.0.0.0_1-1.jar" />
+		<pathelement location="${weblogic}/modules/javax.xml.registry_1.0.0.0_1-0.jar" />
+		<pathelement location="${weblogic}/wlserver_10.3/server/lib/wls-api.jar" />
+		<pathelement location="${weblogic}/modules/com.bea.core.apache_1.3.0.1.jar" />
+		<pathelement location="${weblogic}/modules/com.bea.core.i18n_1.9.0.0.jar" />
+		<pathelement location="${weblogic}/modules/com.bea.core.logging_1.9.0.0.jar" />
+		<pathelement location="${weblogic}/modules/com.bea.core.utils.full_1.10.0.0.jar" />
+		<pathelement location="${weblogic}/modules/com.bea.core.utils.wrapper_1.4.0.0.jar" />
+		<pathelement location="${weblogic}/modules/com.bea.core.utils.classloaders_2.0.0.0.jar" />
+		<pathelement location="${weblogic}/modules/com.bea.core.common.security.providers.env_1.0.0.0_6-2-0-0.jar" />
+		<pathelement location="${weblogic}/modules/com.bea.core.common.security.saml2.manage_1.0.0.0_6-2-0-0.jar" />
+		<pathelement location="${weblogic}/modules/com.bea.core.weblogic.web.api_1.4.0.0.jar" />
+		<pathelement location="${weblogic}/modules/com.bea.core.weblogic.rmi.client_1.11.0.0.jar" />
+		<pathelement location="${weblogic}/modules/com.bea.core.transaction_2.7.1.0.jar" />
+		<pathelement location="${weblogic}/modules/com.bea.core.workarea_1.8.0.0.jar" />
+		<pathelement location="${weblogic}/modules/com.bea.core.xml.weblogic.xpath_1.5.0.0.jar" />
+		<pathelement location="${weblogic}/modules/com.bea.core.datasource6_1.10.0.0.jar" />
+		<pathelement location="${weblogic}/modules/com.bea.core.weblogic.stax_1.10.0.0.jar" />
+		<pathelement location="${weblogic}/modules/javax.persistence_1.0.0.0_1-0-2.jar" />
+		<pathelement location="${weblogic}/modules/org.eclipse.persistence_1.2.0.0_2-3.jar" />
+
+	</path>
+	<path id="Enterprise Application Libraries [DsmEar].libraryclasspath" />
+	<path id="jdk.userclasspath" />
+	<path id="oracleLibs.userclasspath" />
+	<path id="DataSetManagementSystem.location">
+		<pathelement location="${destdir.bin}" />
+		<path refid="Enterprise Application Libraries [DsmEar].libraryclasspath" />
+		<pathelement location="${DataSetManagementSystem.location}/WebContent/WEB-INF/lib/antlr-2.7.7.jar" />
+		<pathelement location="${DataSetManagementSystem.location}/WebContent/WEB-INF/lib/com.sun.tools.xjc_2.2.0.jar" />
+		<pathelement location="${DataSetManagementSystem.location}/WebContent/WEB-INF/lib/com.sun.xml.bind_2.2.0.v201004141950.jar" />
+		<pathelement location="${DataSetManagementSystem.location}/WebContent/WEB-INF/lib/commonj.sdo_2.1.1.v201112051852.jar" />
+		<pathelement location="${DataSetManagementSystem.location}/WebContent/WEB-INF/lib/commons-beanutils-1.9.2.jar" />
+		<pathelement location="${DataSetManagementSystem.location}/WebContent/WEB-INF/lib/commons-codec-1.10.jar" />
+		<pathelement location="${DataSetManagementSystem.location}/WebContent/WEB-INF/lib/commons-collections-3.2.1.jar" />
+		<pathelement location="${DataSetManagementSystem.location}/WebContent/WEB-INF/lib/commons-fileupload-1.2.1.jar" />
+		<pathelement location="${DataSetManagementSystem.location}/WebContent/WEB-INF/lib/commons-io-1.4.jar" />
+		<pathelement location="${DataSetManagementSystem.location}/WebContent/WEB-INF/lib/commons-lang-2.6.jar" />
+		<pathelement location="${DataSetManagementSystem.location}/WebContent/WEB-INF/lib/commons-logging-1.2.jar" />
+		<pathelement location="${DataSetManagementSystem.location}/WebContent/WEB-INF/lib/dom4j-1.6.1.jar" />
+		<pathelement location="${DataSetManagementSystem.location}/WebContent/WEB-INF/lib/eclipselink-jpa-modelgen_2.4.2.v20130514-5956486.jar" />
+		<pathelement location="${DataSetManagementSystem.location}/WebContent/WEB-INF/lib/eclipselink.jar" />
+		<pathelement location="${DataSetManagementSystem.location}/WebContent/WEB-INF/lib/el-api-2.2.jar" />
+		<pathelement location="${DataSetManagementSystem.location}/WebContent/WEB-INF/lib/el-impl-2.2.jar" />
+		<pathelement location="${DataSetManagementSystem.location}/WebContent/WEB-INF/lib/gson-2.7.jar" />
+		<pathelement location="${DataSetManagementSystem.location}/WebContent/WEB-INF/lib/javax.activation_1.1.0.v201108011116.jar" />
+		<pathelement location="${DataSetManagementSystem.location}/WebContent/WEB-INF/lib/javax.el-api-2.2.5.jar" />
+		<pathelement location="${DataSetManagementSystem.location}/WebContent/WEB-INF/lib/javax.mail_1.4.0.v201005080615.jar" />
+		<pathelement location="${DataSetManagementSystem.location}/WebContent/WEB-INF/lib/javax.persistence_1.0.0.jar" />
+		<pathelement location="${DataSetManagementSystem.location}/WebContent/WEB-INF/lib/javax.persistence_2.0.5.v201212031355.jar" />
+		<pathelement location="${DataSetManagementSystem.location}/WebContent/WEB-INF/lib/javax.xml.bind_2.2.0.v201105210648.jar" />
+		<pathelement location="${DataSetManagementSystem.location}/WebContent/WEB-INF/lib/javax.xml.stream_1.0.1.v201004272200.jar" />
+		<pathelement location="${DataSetManagementSystem.location}/WebContent/WEB-INF/lib/jsf-api-2.1.9.jar" />
+		<pathelement location="${DataSetManagementSystem.location}/WebContent/WEB-INF/lib/jsf-impl-2.1.9.jar" />
+		<pathelement location="${DataSetManagementSystem.location}/WebContent/WEB-INF/lib/jsp-api-2.1.jar" />
+		<pathelement location="${DataSetManagementSystem.location}/WebContent/WEB-INF/lib/jstl-1.2.jar" />
+		<pathelement location="${DataSetManagementSystem.location}/WebContent/WEB-INF/lib/log4j-1.2.17.jar" />
+		<pathelement location="${DataSetManagementSystem.location}/WebContent/WEB-INF/lib/ojdbc14.jar" />
+		<pathelement location="${DataSetManagementSystem.location}/WebContent/WEB-INF/lib/org.eclipse.persistence.jpars.source_2.4.2.v20130514-5956486.jar" />
+		<pathelement location="${DataSetManagementSystem.location}/WebContent/WEB-INF/lib/org.eclipse.persistence.jpars_2.4.2.v20130514-5956486.jar" />
+		<pathelement location="${DataSetManagementSystem.location}/WebContent/WEB-INF/lib/poi-3.13.jar" />
+		<pathelement location="${DataSetManagementSystem.location}/WebContent/WEB-INF/lib/poi-ooxml-3.13.jar" />
+		<pathelement location="${DataSetManagementSystem.location}/WebContent/WEB-INF/lib/poi-ooxml-schemas-3.13.jar" />
+		<pathelement location="${DataSetManagementSystem.location}/WebContent/WEB-INF/lib/primefaces-6.0.jar" />
+		<pathelement location="${DataSetManagementSystem.location}/WebContent/WEB-INF/lib/quartz-2.2.3.jar" />
+		<pathelement location="${DataSetManagementSystem.location}/WebContent/WEB-INF/lib/quartz-jobs-2.2.3.jar" />
+		<pathelement location="${DataSetManagementSystem.location}/WebContent/WEB-INF/lib/servlet-api-2.5.jar" />
+		<pathelement location="${DataSetManagementSystem.location}/WebContent/WEB-INF/lib/slf4j-api-1.7.21.jar" />
+		<pathelement location="${DataSetManagementSystem.location}/WebContent/WEB-INF/lib/slf4j-log4j12-1.7.21.jar" />
+		<pathelement location="${DataSetManagementSystem.location}/WebContent/WEB-INF/lib/slf4j-simple-1.7.21.jar" />
+		<pathelement location="${DataSetManagementSystem.location}/WebContent/WEB-INF/lib/xmlbeans-2.6.0.jar" />
+
+		<path refid="WebLogic System Libraries.libraryclasspath" />
+		<path refid="jdk.userclasspath" />
+		<path refid="oracleLibs.userclasspath" />
+	</path>
+
+	<echo message="B4 Compile Targets" />
+	<target name="all" depends="CopyJarsFile2DataSetManagementSystem,build-DataSetManagementSystem,package-DsmEar,removeJarsWarsPostDsmEarPackage" />
+	<!--removeJarsWarsPostDsmEarPackage" />-->
+	<target name="allANDJUnitTests" depends="CopyJarsFile2DataSetManagementSystem,build-DataSetManagementSystem,package-DsmEar,removeJarsWarsPostDsmEarPackage" />
+	<target name="CopyJarsFile2DataSetManagementSystem">
+		<!-- adding a retry  to the copy to try and get past this issue -->
+		<retry retrycount="3">
+			<copy description="Copies application libraries and 3rd party libraries to DataSetManagementSystem.war" todir="${destdir.distro.libs}" overwrite="true" failonerror="true" verbose="false">
+				<fileset dir="${DataSetManagementSystem.location}/WebContent/WEB-INF/lib" includes="*.jar" />
+			</copy>
+		</retry>
+	</target>
+
+
+	<!-- -->
+	<target name="build-DataSetManagementSystem">
+		<startBuildActivity activityIdProperty="build-DataSetManagementSystem" label="Compiling DataSetManagementSystem" autoComplete="true" buildResultUUID="${buildResultUUID}" repositoryAddress="${repositoryAddress}" userId="${userId}" passwordFile="${password}" />
+		<javac srcdir="${DataSetManagementSystem.location}/src" destdir="${destdir.bin}" debug="on" nowarn="on" failonerror="false" errorProperty="errors.found" source="1.6" target="1.6">
+			<classpath refid="DataSetManagementSystem.classpath" />
+			<compilerarg value="-log" />
+			<compilerarg value="${destdir}/buildDataSetManagementSystem.xml" />
+		</javac>
+		<jdtCompileLogPublisher buildResultUUID="${buildResultUUID}" repositoryAddress="${repositoryAddress}" userId="${userId}" passwordFile="${password}" filePath="${destdir}/buildDataSetManagementSystem.xml" />
+	</target>
+	<target name="purge" unless="${nopurge}">
+		<!-- purge all for 2 weeks and older but old ear file -->
+		<property name="purgeDir" value="${basedir}/../../.." />
+		<echo message="Deleting files older than 14 days from: ${purgeDir}" />
+		<tstamp>
+			<format property="touch.time" pattern="MM/dd/yyyy hh:mm aa" offset="-14" unit="day" />
+		</tstamp>
+		<delete>
+			<fileset dir="${purgeDir}" excludes="*.ear">
+				<date datetime="${touch.time}" when="before" />
+
+				<scriptselector language="javascript">
+					<![CDATA[
+		                if (file.getParentFile().list().length > 3) {
+		                    self.setSelected(true);
+		                }
+		                else {
+		                    self.setSelected(false);
+		                }
+		            ]]> </scriptselector>
+			</fileset>
+		</delete>
+	</target>
+
+	<target name="package-DataSetManagementSystem" depends="build-DataSetManagementSystem">
+		<startBuildActivity activityIdProperty="createWar" label="Pkg WAR" autoComplete="true" buildResultUUID="${buildResultUUID}" repositoryAddress="${repositoryAddress}" userId="${userId}" passwordFile="${password}" />
+
+		<copy todir="${destdir.distro}/web">
+			<fileset dir="${loadDir}/DataSetManagementSystem/WebContent">
+				<exclude name="**/lib/*" />
+				<include name="**/*" />
+			</fileset>
+		</copy>
+
+		<!-- Replace build token with Label -->
+		<replace dir="${destdir.distro}/web" summary="true">
+			<replacefilter token="@@@BUILD@@@" value="${buildLabel}" />
+		</replace>
+		<copy todir="${destdir.bin}" failonerror="false">
+			<fileset dir="${DataSetManagementSystem.location}/src">
+				<exclude name="**/*.java" />
+			</fileset>
+		</copy>
+		<copy todir="${destdir.distro.libs}" failonerror="false">
+		</copy>
+
+		<!-- need to get EAR ready as well since we need its path -->
+		<mkdir dir="${destdir.distro}/DsmEar" />
+		<mkdir dir="${destdir.distro}/DsmEar/APP-INF" />
+		<mkdir dir="${destdir.distro}/DsmEar/APP-INF/classes" />
+		<mkdir dir="${destdir.distro}/DsmEar/APP-INF/lib" />
+		<mkdir dir="${destdir.distro}/DsmEar/META-INF" />
+		<mkdir dir="${destdir.distro}/DsmEar/lib" />
+
+		<copy todir="${destdir.distro}/DsmEar/lib" failonerror="false" overwrite="true">
+			<fileset dir="${DataSetManagementSystem.location}/WebContent/WEB-INF/lib/">
+				<include name="*.jar" />
+				<exclude name="javax.persistence.*" />
+			</fileset>
+		</copy>
+		
+		<path id="war.classpath">
+			<fileset dir="${destdir.distro}/DsmEar/lib">
+				<include name="**/*.jar" />
+			</fileset>
+		</path>
+		<!-- convert classpath to a flat list/string for use in manifest task -->
+		<pathconvert property="mf.classpath" pathsep=" ">
+			<path refid="war.classpath" />
+			<flattenmapper />
+		</pathconvert>
+
+		<!-- needed for TODAY -->
+		<tstamp />
+		<manifest file="${destdir.distro}/MANIFEST.MF">
+			<attribute name="Built-By" value="DSM New Build" />
+			<attribute name="Created-By" value="IBM GBS" />
+			<attribute name="Implementation-Version" value="${buildLabel}" />
+			<attribute name="Built-Date" value="${TODAY}" />
+			<attribute name="Class-Path" value="${mf.classpath}" />
+		</manifest>
+		<war destfile="${destdir.distro}/DataSetManagementSystem.war" webxml="${loadDir}/DataSetManagementSystem/WebContent/WEB-INF/web.xml" duplicate="preserve">
+			<manifest>
+				<attribute name="Built-By" value="DSM New Build" />
+				<attribute name="Created-By" value="IBM GBS" />
+				<attribute name="Implementation-Version" value="${buildLabel}" />
+				<attribute name="Built-Date" value="${TODAY}" />
+				<attribute name="Class-Path" value="${mf.classpath}" />
+			</manifest>
+			<fileset dir="${destdir.distro}/web" />
+			<classes dir="${destdir.bin}" />
+		</war>
+
+		<artifactPublisher userId="${userId}" passwordFile="${password}" repositoryAddress="${repositoryAddress}" buildResultUUID="${buildResultUUID}" verbose="true" filePath="${destdir.distro}/DataSetManagementSystem.war" label="DataSetManagementSystem WAR file" />
+	</target>
+
+	<target name="package-DsmEar" depends="package-DataSetManagementSystem">
+		<startBuildActivity activityIdProperty="package-DsmEar" label="package-DsmEar file" autoComplete="true" buildResultUUID="${buildResultUUID}" repositoryAddress="${repositoryAddress}" userId="${userId}" passwordFile="${password}" />
+
+		<copy overwrite="yes" file="${destdir.distro}/RsaMessagingService.jar" todir="${destdir.distro}/DsmEar" />
+
+		<ear destfile="${destdir.distro}/${DsmEarfilename}" appxml="${outputRootDirectory}/${buildLabel}/RsaBuild/RsaBatchEar/application.xml">
+			<metainf dir="${outputRootDirectory}/${buildLabel}/RsaBuild/DsmEar/META-INF" />
+
+			<manifest>
+
+				<attribute name="Built-By" value="DSM New BUild " />
+
+				<attribute name="Specification-Title" value="DSM" />
+
+				<attribute name="Specification-Version" value="${buildLabel}" />
+
+				<attribute name="Implementation-Title" value="${DsmEarfilename}" />
+
+				<attribute name="Implementation-Version" value="${DsmEarfilename}" />
+
+				<attribute name="Built-Date" value="${TODAY}" />
+
+				<attribute name="Class-Path" value="${mf.classpath}" />
+
+			</manifest>
+
+			<fileset dir="${destdir.distro}/DsmEar/lib">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${destdir.distro}/DsmEar" includes="*.jar,*.war" />
+		</ear>
+
+
+
+		<artifactPublisher userId="${userId}" passwordFile="${password}" repositoryAddress="${repositoryAddress}" buildResultUUID="${buildResultUUID}" verbose="true" filePath="${destdir.distro}/${DsmEarfilename}" label="RsaEAR file" />
+
+		<startBuildActivity activityIdProperty="clean-and-deploy-DsmEar" label="clean and deploy DsmEar file" autoComplete="true" buildResultUUID="${buildResultUUID}" repositoryAddress="${repositoryAddress}" userId="${userId}" passwordFile="${password}" />
+
+	</target>
+	<echo message="Deploy DSMEar" />
+	<path id="weblogic1.classpath">
+		<pathelement location="${weblogic}/jdk160_29/lib/tools.jar" />
+		<pathelement location="${weblogic}/wlserver_10.3/server/lib/weblogic.jar" />
+		<pathelement location="${weblogic}/modules/org.apache.ant_1.7.1/lib/ant-all.jar" />
+		<pathelement location="${weblogic}/modules/net.sf.antcontrib_1.1.0.0_1-0b2/lib/ant-contrib.jar" />
+	</path>
+
+	<!-- Weblogic Deployment targets -->
+	<target name="undeployDsmEar" unless="errors.found">
+		<wldeploy action="undeploy" verbose="true" debug="true" name="DsmEar" user="weblogic" password="welcome1" adminurl="${weblogicAdminUrl}" targets="${weblogictargetserver}" failonerror="false" />
+	</target>
+	<target name="deployDsmEar" unless="errors.found">
+		<wldeploy remote="true" upload="true" action="deploy" verbose="true" debug="true" name="DsmEar" source="${destdir.distro}/${DsmEarfilename}" user="weblogic" password="welcome1" adminurl="${weblogicAdminUrl}" targets="${weblogictargetserver}" />
+	</target>
+	<target name="removeJarsWarsPostDsmEarPackage">
+		<startBuildActivity activityIdProperty="Cleanup" label="clean up files" autoComplete="true" buildResultUUID="${buildResultUUID}" repositoryAddress="${repositoryAddress}" userId="${userId}" passwordFile="${password}" />
+		<delete verbose="no" failonerror="false">
+			<fileset dir="${loadDir}">
+				<include name="**/*.jar" />
+				<exclude name="**/*.war" />
+			</fileset>
+		</delete>
+		<startBuildActivity activityIdProperty="deploy" label="deploy if deploying" autoComplete="true" buildResultUUID="${buildResultUUID}" repositoryAddress="${repositoryAddress}" userId="${userId}" passwordFile="${password}" />
+
+	</target>
+
+
+	<!--removing unless="errors.found" because we are space challenged -->
+	<target name="cleanUp">
+
+		<property name="purgeDir" value="${loadDir}" />
+
+		<echo message="Deleting files because build is good from: ${purgeDir}" />
+		<tstamp>
+			<format property="touch.time" pattern="MM/dd/yyyy hh:mm aa" offset="-30" unit="day" />
+		</tstamp>
+
+		<delete includeemptydirs="true">
+			<fileset dir="${purgeDir}" excludes="**/*.ear,**/RsaBuild/libs/*.jar">
+
+
+			</fileset>
+		</delete>
+	</target>
+
+
+
+
+	<!-- Task to deploy DsmEar file in weblogic -->
+
+	<taskdef name="wldeploy" classname="weblogic.ant.taskdefs.management.WLDeploy">
+
+		<classpath refid="weblogic1.classpath" />
+
+	</taskdef>
+
+
+
+	<!-- 
+	
+		These task definitions make the Jazz ant tasks available to this build file.
+	     In order to find these classnames at run time, ant must be invoked with:
+
+		     -lib <buildsystem-location>/buildtoolkit
+	 -->
+	<taskdef name="artifactPublisher" classname="com.ibm.team.build.ant.task.ArtifactFilePublisherTask" />
+
+	<taskdef name="artifactLinkPublisher" classname="com.ibm.team.build.ant.task.ArtifactLinkPublisherTask" />
+
+	<taskdef name="buildResultPublisher" classname="com.ibm.team.build.ant.task.BuildResultPublisherTask" />
+
+	<taskdef name="filePublisher" classname="com.ibm.team.build.ant.task.FilePublisherTask" />
+
+	<taskdef name="jdtCompileLogPublisher" classname="com.ibm.team.build.ant.task.JdtCompileLogPublisherTask" />
+
+	<taskdef name="junitLogPublisher" classname="com.ibm.team.build.ant.task.JUnitLogPublisherTask" />
+
+	<taskdef name="junitResultPublisher" classname="com.ibm.team.build.ant.task.JUnitLogPublisherTask" />
+
+	<taskdef name="linkPublisher" classname="com.ibm.team.build.ant.task.LinkPublisherTask" />
+
+	<taskdef name="logPublisher" classname="com.ibm.team.build.ant.task.LogPublisherTask" />
+
+	<taskdef name="teamAccept" classname="com.ibm.team.build.ant.task.TeamAcceptTask" />
+
+	<taskdef name="teamFetch" classname="com.ibm.team.build.ant.task.TeamFetchTask" />
+
+	<taskdef name="workItemPublisher" classname="com.ibm.team.build.ant.task.WorkItemPublisherTask" />
+
+	<taskdef name="startBuildActivity" classname="com.ibm.team.build.ant.task.StartBuildActivityTask" />
+
+	<taskdef name="completeBuildActivity" classname="com.ibm.team.build.ant.task.CompleteBuildActivityTask" />
+
+</project>

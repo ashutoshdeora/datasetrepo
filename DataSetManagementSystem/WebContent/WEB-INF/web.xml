@@ -9,13 +9,10 @@
 		<param-name>javax.faces.PROJECT_STAGE</param-name>
 		<param-value>Development</param-value>
 	</context-param>
-	 <context-param>
-        <param-name>com.sun.faces.expressionFactory</param-name>
-        <param-value>com.sun.el.ExpressionFactoryImpl</param-value>
-    </context-param>
-
-	<!-- <welcome-file-list> <welcome-file>/pages/login.xhtml</welcome-file> 
-		</welcome-file-list> -->
+	<context-param>
+		<param-name>com.sun.faces.expressionFactory</param-name>
+		<param-value>com.sun.el.ExpressionFactoryImpl</param-value>
+	</context-param>
 
 	<!-- JSF mapping -->
 	<servlet>
@@ -68,9 +65,24 @@
 		of the application -->
 	<filter-mapping>
 		<filter-name>LoginFilter</filter-name>
-
 		<url-pattern>/pages/*</url-pattern>
 	</filter-mapping>
+	<context-param>
+		<param-name>quartz:config-file</param-name>
+		<param-value>quartz.properties</param-value>
+	</context-param>
+	<context-param>
+		<param-name>quartz:shutdown-on-unload</param-name>
+		<param-value>true</param-value>
+	</context-param>
+	<context-param>
+		<param-name>quartz:wait-on-shutdown</param-name>
+		<param-value>true</param-value>
+	</context-param>
+	<context-param>
+		<param-name>quartz:start-on-load</param-name>
+		<param-value>true</param-value>
+	</context-param>
 	<listener>
 		<listener-class>org.quartz.ee.servlet.QuartzInitializerListener</listener-class>
 	</listener>

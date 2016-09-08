@@ -21,7 +21,7 @@
 				<job-name>AJob</job-name>
 				<job-group>AGroup</job-group>
 				<!-- It will run every 5 seconds -->
-				<cron-expression>0/5 * * * * ?</cron-expression>
+				<cron-expression>0 0 7 * * ?</cron-expression>
 			</cron>
 		</trigger>
 	</schedule>

@@ -2,6 +2,7 @@ package com.ibm.scheduler;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -26,15 +27,14 @@ public class SchedulerJob extends CommonFacesBean implements Job {
 	private static final String USERNAME = "a099996";
 	private static final String PASSWORD = "MYname_3880";
 
-	
-	
 	@Override
-	public void execute(JobExecutionContext context) throws JobExecutionException {
+	public void execute(JobExecutionContext context)
+			throws JobExecutionException {
 
 		updateDBForDefectStatus();
 
-		System.out.println("JSF 2 + Quartz 2 example");
-
+		System.out.println("JSF 2 From SchedulerJob+ Quartz 2 example");
+		System.out.println("Time when called " + Calendar.getInstance().getTime());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -44,7 +44,8 @@ public class SchedulerJob extends CommonFacesBean implements Job {
 			EntityManager entityManager = getEntitymanagerFromCurrent();
 			List<DatasetRunDefect> tempList = new ArrayList<DatasetRunDefect>();
 			entityManager.getTransaction().begin();
-			tempList = entityManager.createNamedQuery("DatasetRunDefect.findAll").getResultList();
+			tempList = entityManager.createNamedQuery(
+					"DatasetRunDefect.findAll").getResultList();
 			entityManager.getTransaction().commit();
 			ArrayList<String> hpqcDefectList = new ArrayList<String>();
 			for (DatasetRunDefect defect : tempList) {
@@ -58,18 +59,23 @@ public class SchedulerJob extends CommonFacesBean implements Job {
 			// update all defects in db.
 			for (DefectBean defectBean : beans) {
 				for (DatasetRunDefect defect : tempList) {
-					if (defectBean.getHPQCID().equalsIgnoreCase(String.valueOf(defect.getHpqcdefectid()))) {
+					if (defectBean.getHPQCID().equalsIgnoreCase(
+							String.valueOf(defect.getHpqcdefectid()))) {
 						defect = new DatasetRunDefect();
 						defect.setDefectsevrity(defectBean.getDefectseverity());// severity
 						defect.setDefectstatus(defectBean.getDefectstatus());// status
-						defect.setHpqcdefectid(BigDecimal.valueOf(Long.valueOf(defectBean.getHPQCID())));// id
+						defect.setHpqcdefectid(BigDecimal.valueOf(Long
+								.valueOf(defectBean.getHPQCID())));// id
 						defect.setDefectOwner(defectBean.getDefectOwner()); // owner
 						defect.setDefectCause(defectBean.getDefectCause());// user-02
 						defect.setDefectName(defectBean.getDefectName()); // name
 						defect.setDefectPriority(defectBean.getDefectPriority()); // priority
-						defect.setDefectCreationDate(defectBean.getDefectCreationDate()); // creation-time
-						defect.setDefectLastModifies(defectBean.getDefectLastModifies()); // last-modified
-						defect.setDefectClosingDate(defectBean.getDefectClosingDate()); // closing-date
+						defect.setDefectCreationDate(defectBean
+								.getDefectCreationDate()); // creation-time
+						defect.setDefectLastModifies(defectBean
+								.getDefectLastModifies()); // last-modified
+						defect.setDefectClosingDate(defectBean
+								.getDefectClosingDate()); // closing-date
 						defect.setDefectRaisedBy(defectBean.getDefectRaisedBy()); // detected-by
 						entityManager.getTransaction().begin();
 						entityManager.merge(defect);
@@ -79,18 +85,24 @@ public class SchedulerJob extends CommonFacesBean implements Job {
 			}
 
 			// after insert make a select query to get the latest one
-			tempList = new ArrayList<>();
+			tempList = new ArrayList<DatasetRunDefect>();
 			entityManager.getTransaction().begin();
-			tempList = entityManager.createNamedQuery("DatasetRunDefect.findAll").getResultList();
+			tempList = entityManager.createNamedQuery(
+					"DatasetRunDefect.findAll").getResultList();
 
 			// now update the datasetrunfor the defects
 			List<DatasetRun> datasetRunsList = new ArrayList<DatasetRun>();
-			datasetRunsList = entityManager.createQuery("select dr from DatasetRun dr where dr.runstatus =:runstatus and dr.readyforrun =:readyforrun ")
-					.setParameter("runstatus", DATASETRUNFAILED).setParameter("readyforrun", READYFORRERUNYES).getResultList();
+			datasetRunsList = entityManager
+					.createQuery(
+							"select dr from DatasetRun dr where dr.runstatus =:runstatus and dr.readyforrun =:readyforrun ")
+					.setParameter("runstatus", DATASETRUNFAILED)
+					.setParameter("readyforrun", READYFORRERUNYES)
+					.getResultList();
 			for (DatasetRun datasetRun : datasetRunsList) {
 				ArrayList<String> temp = new ArrayList<String>();
 				for (DatasetRunDefect defect : tempList) {
-					if (defect.getId().getDatasetrunid() == datasetRun.getDatasetrunid()) {
+					if (defect.getId().getDatasetrunid() == datasetRun
+							.getDatasetrunid()) {
 						// defect status
 						// Assigned - false
 						// Cancelled -true
@@ -105,32 +117,40 @@ public class SchedulerJob extends CommonFacesBean implements Job {
 						// Re-assigned - false
 						// Reopen - false
 						// Retest - true
-						switch (defect.getDefectstatus()) {
-						case "Cancelled":
+
+						if ("Cancelled".equalsIgnoreCase(defect
+								.getDefectstatus())) {
 							temp.add(DATASETRUNPASS);
 							break;
-						case "Change Request":
+						} else if ("Change Request".equalsIgnoreCase(defect
+								.getDefectstatus())) {
 							temp.add(DATASETRUNPASS);
 							break;
-						case "Closed":
+						} else if ("Closed".equalsIgnoreCase(defect
+								.getDefectstatus())) {
 							temp.add(DATASETRUNPASS);
 							break;
-						case "Deferred":
+						} else if ("Deferred".equalsIgnoreCase(defect
+								.getDefectstatus())) {
 							temp.add(DATASETRUNPASS);
 							break;
-						case "Duplicated":
+						} else if ("Duplicated".equalsIgnoreCase(defect
+								.getDefectstatus())) {
 							temp.add(DATASETRUNPASS);
 							break;
-						case "Not a Defect":
+						} else if ("Not a Defect".equalsIgnoreCase(defect
+								.getDefectstatus())) {
 							temp.add(DATASETRUNPASS);
 							break;
-						case "Retest":
+						} else if ("Retest".equalsIgnoreCase(defect
+								.getDefectstatus())) {
 							temp.add(DATASETRUNPASS);
 							break;
-						default:
+						} else {
 							temp.add(DATASETRUNFAILED);
 							break;
 						}
+
 					}
 				}
 				// list cannot be empty
@@ -158,9 +178,11 @@ public class SchedulerJob extends CommonFacesBean implements Job {
 	 * @return
 	 * @throws Exception
 	 */
-	private List<DefectBean> validateWithRest(ArrayList<String> defList) throws Exception {
+	private List<DefectBean> validateWithRest(ArrayList<String> defList)
+			throws Exception {
 		RestCallToHPQC callToHPQC = new RestCallToHPQC();
-		List<DefectBean> bean = callToHPQC.callRestFromHPQCForDefects(defList, USERNAME, PASSWORD);
+		List<DefectBean> bean = callToHPQC.callRestFromHPQCForDefects(defList,
+				USERNAME, PASSWORD);
 		return bean;
 
 	}

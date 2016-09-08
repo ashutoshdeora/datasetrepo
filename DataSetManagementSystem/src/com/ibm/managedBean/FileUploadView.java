@@ -185,8 +185,8 @@ public class FileUploadView extends CommonFacesBean implements Serializable {
 				dataArray.add(data);
 			}
 
+			workbook.close();
 			inputStream.close();
-
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -333,6 +333,10 @@ public class FileUploadView extends CommonFacesBean implements Serializable {
 		entityManager.getTransaction().begin();
 		BigDecimal dslastId = (BigDecimal) entityManager.createNativeQuery("select NVL(MAX(DATASETID), 0) lastId from Datasetmaster").getSingleResult();
 		long dsprimaryKey = dslastId.longValue();
+		BigDecimal fslastId = (BigDecimal) entityManager.createNativeQuery("select NVL(MAX(featureid), 0) lastId from FeatureMaster").getSingleResult();
+		long fsprimaryKey = fslastId.longValue();
+		BigDecimal aslastId = (BigDecimal) entityManager.createNativeQuery("select NVL(MAX(accountid), 0) lastId from AccountMaster").getSingleResult();
+		long asprimaryKey = aslastId.longValue();
 		// dummy set for feature without any data set
 		DatasetMaster dataSetData = new DatasetMaster();
 		dataSetData.setDatasetname(DUMMYDATASET);
@@ -343,14 +347,12 @@ public class FileUploadView extends CommonFacesBean implements Serializable {
 		dataSetData.setStatus("ACT");
 		dsprimaryKey = dsprimaryKey + 1;
 		dataSetData.setDatasetid(dsprimaryKey);
-
 		entityManager.persist(dataSetData);
-		entityManager.getTransaction().commit();
 		for (ExcelReadBean bean : list) {
-			entityManager.getTransaction().begin();
+
 			List<DatasetMaster> masters = entityManager.createQuery("select ds.datasetname from DatasetMaster ds where ds.datasetname=:datasetname")
 					.setParameter("datasetname", bean.getDatasetSPLocation()).getResultList();
-			entityManager.getTransaction().commit();
+
 			if (masters != null && masters.size() > 0) {
 				// don't insert again
 			} else {
@@ -364,123 +366,54 @@ public class FileUploadView extends CommonFacesBean implements Serializable {
 					dataSetData.setStatus("ACT");
 					dsprimaryKey = dsprimaryKey + 1;
 					dataSetData.setDatasetid(dsprimaryKey);
-					entityManager.getTransaction().begin();
 					entityManager.persist(dataSetData);
-					entityManager.getTransaction().commit();
+
+				} else {
+
 				}
 			}
-
-		}
-		// insert feature
-		entityManager.getTransaction().begin();
-		BigDecimal fslastId = (BigDecimal) entityManager.createNativeQuery("select NVL(MAX(featureid), 0) lastId from FeatureMaster").getSingleResult();
-		entityManager.getTransaction().commit();
-		long fsprimaryKey = fslastId.longValue();
-		for (ExcelReadBean bean : list) {
-			entityManager.getTransaction().begin();
+			// insert feature
 			List<FeatureMaster> featureMasters = entityManager.createQuery("select fs from FeatureMaster fs where fs.featureset=:featureset ")
 					.setParameter("featureset", bean.getID()).getResultList();
-			entityManager.getTransaction().commit();
 			if (featureMasters != null && featureMasters.size() > 0) {
-				// data present do a merge
-				for (FeatureMaster master : featureMasters) {
-					if (BLANKDATA.equalsIgnoreCase(bean.getDatasetSPLocation())) {
-						entityManager.getTransaction().begin();
-						List<DatasetMaster> dmtempList = entityManager.createQuery("select ds from DatasetMaster ds where ds.datasetname=:datasetname ")
-								.setParameter("datasetname", DUMMYDATASET).getResultList();
-						master.setDatasetmasters(dmtempList);
-						entityManager.merge(master);
-						entityManager.getTransaction().commit();
-					} else {
-						entityManager.getTransaction().begin();
-						List<DatasetMaster> tempList = entityManager.createQuery("select ds from DatasetMaster ds where ds.datasetname=:datasetname ")
-								.setParameter("datasetname", bean.getDatasetSPLocation()).getResultList();
-						master.setDatasetmasters(tempList);
-						entityManager.merge(master);
-						entityManager.getTransaction().commit();
-					}
-				}
 			} else {
 				// new feature data // do insert
 				// Feature not having any data set
 				// associate with dummy dataset
 				if (BLANKDATA.equalsIgnoreCase(bean.getDatasetSPLocation())) {
-					entityManager.getTransaction().begin();
-					List<DatasetMaster> dmtempList = entityManager.createQuery("select ds from DatasetMaster ds where ds.datasetname=:datasetname ")
-							.setParameter("datasetname", DUMMYDATASET).getResultList();
+
 					FeatureMaster feature = new FeatureMaster();
 					fsprimaryKey = fsprimaryKey + 1;
 					feature.setFeatureid(fsprimaryKey);
 					feature.setFeatureset(bean.getID());
-					feature.setDatasetmasters(dmtempList);
 					feature.setCreatedby(loginManagedBean.getUserName());
 					feature.setUpdatedby(loginManagedBean.getUserName());
 					feature.setCreationdate(new Timestamp(new Date().getTime()));
 					feature.setUpdatedate(new Timestamp(new Date().getTime()));
 					feature.setStatus("ACT");
 					entityManager.persist(feature);
-					entityManager.getTransaction().commit();
 				} else {
-					entityManager.getTransaction().begin();
-					List<DatasetMaster> tempList = entityManager.createQuery("select ds from DatasetMaster ds where ds.datasetname=:datasetname ")
-							.setParameter("datasetname", bean.getDatasetSPLocation()).getResultList();
 					FeatureMaster feature = new FeatureMaster();
 					fsprimaryKey = fsprimaryKey + 1;
 					feature.setFeatureid(fsprimaryKey);
 					feature.setFeatureset(bean.getID());
-					feature.setDatasetmasters(tempList);
 					feature.setCreatedby(loginManagedBean.getUserName());
 					feature.setUpdatedby(loginManagedBean.getUserName());
 					feature.setCreationdate(new Timestamp(new Date().getTime()));
 					feature.setUpdatedate(new Timestamp(new Date().getTime()));
 					feature.setStatus("ACT");
 					entityManager.persist(feature);
-					entityManager.getTransaction().commit();
+
 				}
 			}
-		}
-
-		// insert account master
-		entityManager.getTransaction().begin();
-		BigDecimal aslastId = (BigDecimal) entityManager.createNativeQuery("select NVL(MAX(accountid), 0) lastId from AccountMaster").getSingleResult();
-		entityManager.getTransaction().commit();
-		long asprimaryKey = aslastId.longValue();
-
-		for (ExcelReadBean bean : list) {
+			// insert account master
 			// check for account present as there will be multiple account.
-			entityManager.getTransaction().begin();
 			List<AccountMaster> data = entityManager.createQuery("select acn from AccountMaster acn where acn.accountname=:accountname")
 					.setParameter("accountname", bean.getAccountName()).getResultList();
-			entityManager.getTransaction().commit();
 			if (data != null && data.size() > 0) {
-				// account present
-				// merge data
-				for (AccountMaster master : data) {
-					if (BLANKDATA.equalsIgnoreCase(bean.getDatasetSPLocation())) {
-						entityManager.getTransaction().begin();
-						List<DatasetMaster> dmtempList = entityManager.createQuery("select ds from DatasetMaster ds where ds.datasetname=:datasetname ")
-								.setParameter("datasetname", DUMMYDATASET).getResultList();
-						master.setDatasetmastersList(dmtempList);
-						entityManager.merge(master);
-						entityManager.getTransaction().commit();
-					} else {
-						entityManager.getTransaction().begin();
-						List<DatasetMaster> tempList = entityManager.createQuery("select ds from DatasetMaster ds where ds.datasetname=:datasetname ")
-								.setParameter("datasetname", bean.getDatasetSPLocation()).getResultList();
-
-						master.setDatasetmastersList(tempList);
-						entityManager.merge(master);
-						entityManager.getTransaction().commit();
-					}
-				}
-
 			} else {
 				// insert data
-
 				if (BLANKDATA.equalsIgnoreCase(bean.getDatasetSPLocation())) {
-					entityManager.getTransaction().begin();
-					List<DatasetMaster> dmtempList = entityManager.createQuery("select ds from DatasetMaster ds where ds.datasetname=:datasetname ")
-							.setParameter("datasetname", DUMMYDATASET).getResultList();
 					AccountMaster accountMaster = new AccountMaster();
 					asprimaryKey = asprimaryKey + 1;
 					accountMaster.setAccountid(asprimaryKey);
@@ -491,17 +424,8 @@ public class FileUploadView extends CommonFacesBean implements Serializable {
 					accountMaster.setUpdatedate(new Timestamp(new Date().getTime()));
 					accountMaster.setStatus("ACT");
 					accountMaster.setAccountsetid(BigDecimal.valueOf(accountMaster.getAccountid()));
-					accountMaster.setDatasetmastersList(dmtempList);
 					entityManager.persist(accountMaster);
-					entityManager.getTransaction().commit();
-
 				} else {
-
-					// now query from feature table to get list of features ids
-					entityManager.getTransaction().begin();
-					List<DatasetMaster> tempList = entityManager.createQuery("select ds from DatasetMaster ds where ds.datasetname=:datasetname ")
-							.setParameter("datasetname", bean.getDatasetSPLocation()).getResultList();
-
 					AccountMaster accountMaster = new AccountMaster();
 					asprimaryKey = asprimaryKey + 1;
 					accountMaster.setAccountid(asprimaryKey);
@@ -512,17 +436,58 @@ public class FileUploadView extends CommonFacesBean implements Serializable {
 					accountMaster.setUpdatedate(new Timestamp(new Date().getTime()));
 					accountMaster.setStatus("ACT");
 					accountMaster.setAccountsetid(BigDecimal.valueOf(accountMaster.getAccountid()));
-					accountMaster.setDatasetmastersList(tempList);
 					entityManager.persist(accountMaster);
-					entityManager.getTransaction().commit();
 				}
 			}
 		}
+		entityManager.getTransaction().commit();
 
+		entityManager.getTransaction().begin();
+		List<FeatureMaster> featureMasters = entityManager.createQuery("select fr from FeatureMaster fr ").getResultList();
+		List<AccountMaster> accountMasters = entityManager.createQuery("select acn from AccountMaster acn").getResultList();
+		for (AccountMaster master : accountMasters) {
+			String accountName = master.getAccountname();
+			List<String> datasetNames = new ArrayList<String>();
+			for (ExcelReadBean bean : list) {
+				if (accountName.equalsIgnoreCase(bean.getAccountName())) {
+					String datasetName = bean.getDatasetSPLocation();
+					if(BLANKDATA.equalsIgnoreCase(datasetName)){
+						datasetName = DUMMYDATASET;
+					}
+					datasetNames.add(datasetName);
+				}
+			}
+			// now I have dataset
+			List<DatasetMaster> datasetMasters = entityManager.createQuery("select ds from DatasetMaster ds where ds.datasetname IN :datasets")
+					.setParameter("datasets", datasetNames).getResultList();
+
+			// now merge this with account
+			master.setDatasetmastersList(datasetMasters);
+			entityManager.merge(master);
+		}
+
+		for (FeatureMaster featureMaster : featureMasters) {
+			String featureId = featureMaster.getFeatureset();
+			List<String> datasetNames = new ArrayList<String>();
+			for (ExcelReadBean bean : list) {
+				if (featureId.equalsIgnoreCase(bean.getID())) {
+					String datasetName = bean.getDatasetSPLocation();
+					if(BLANKDATA.equalsIgnoreCase(datasetName)){
+						datasetName = DUMMYDATASET;
+					}
+					datasetNames.add(datasetName);
+				}
+			}
+			List<DatasetMaster> datasetMasters = entityManager.createQuery("select ds from DatasetMaster ds where ds.datasetname IN :datasets")
+					.setParameter("datasets", datasetNames).getResultList();
+			featureMaster.setDatasetmasters(datasetMasters);
+			entityManager.merge(featureMaster);
+		}
+		entityManager.getTransaction().commit();
 		entityManager.close();
 	}
 
-	@SuppressWarnings("unchecked")
+	
 	private void insertDataSet(List<DatasetMaster> dataSetsList) {
 
 		EntityManager entityManager = getEntitymanagerFromCurrent();

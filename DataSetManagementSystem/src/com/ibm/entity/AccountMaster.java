@@ -61,7 +61,7 @@ public class AccountMaster implements Serializable {
 	private List<DatasetAccountHistory> datasetaccounthistories;
 
 	// bi-directional many-to-many association to DatasetMaster
-	@ManyToMany(fetch = FetchType.LAZY, cascade=CascadeType.MERGE)
+	@ManyToMany(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
 	@JoinTable(name = "DATASETACCOUNT", joinColumns = { @JoinColumn(name = "ACCOUNTMASTERID", nullable = false) }, inverseJoinColumns = { @JoinColumn(name = "DATASETMASTERID", nullable = false) })
 	private List<DatasetMaster> datasetmastersList;
 

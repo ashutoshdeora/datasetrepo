@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -65,7 +66,7 @@ public class DatasetMaster implements Serializable {
 	private List<DatasetHistory> datasethistories;
 
 	// bi-directional many-to-many association to AccountMaster
-	@ManyToMany(mappedBy = "datasetmastersList",fetch =FetchType.EAGER)
+	@ManyToMany(mappedBy = "datasetmastersList",fetch =FetchType.EAGER,cascade=CascadeType.ALL)
 	private List<AccountMaster> accountmasters;
 
 	// bi-directional many-to-one association to DatasetRun
@@ -73,7 +74,7 @@ public class DatasetMaster implements Serializable {
 	private List<DatasetRun> datasetruns;
 
 	// bi-directional many-to-many association to FeatureMaster
-	@ManyToMany(mappedBy = "datasetmasters",fetch =FetchType.EAGER)
+	@ManyToMany(mappedBy = "datasetmasters",fetch =FetchType.EAGER,cascade=CascadeType.ALL)
 	private List<FeatureMaster> featuremasters;
 
 	public DatasetMaster() {
