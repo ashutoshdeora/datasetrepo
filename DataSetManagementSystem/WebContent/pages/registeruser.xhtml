@@ -1,0 +1,49 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	template="/templates/template.xhtml">
+	<ui:define name="metadata">
+	</ui:define>
+	<ui:define name="content">
+		<h:form>
+			<h:panelGroup layout="block">
+				<p:panel id="regis_panel">
+					<h:messages globalOnly="true" />
+					<h:panelGrid columns="2">
+						<h:outputLabel value="New/Update User" />
+						<h:inputText
+							value="#{userRegistrationManagedBean.userDetail.username}" />
+						<h:outputLabel value="New Password" />
+						<h:inputText
+							value="#{userRegistrationManagedBean.userDetail.password}" />
+						<h:outputLabel value="New HPQC User Name" />
+						<h:inputText
+							value="#{userRegistrationManagedBean.userDetail.hpqcUSerID}" />
+						<h:outputLabel value="New HPQC Password" />
+						<h:inputText
+							value="#{userRegistrationManagedBean.userDetail.hpqcPassword}" />
+						<h:outputLabel value="Level" />
+						<h:inputText
+							value="#{userRegistrationManagedBean.userDetail.accesslevel}" />
+						<p:commandButton
+							action="#{userRegistrationManagedBean.createNewUser}"
+							value="Register" rendered="#{!userRegistrationManagedBean.edituser}"/>
+						<p:commandButton 
+							action="#{userRegistrationManagedBean.updateExistingsUer}"
+							value="Update Existing User" update="regis_panel" rendered="#{userRegistrationManagedBean.edituser}"></p:commandButton>
+					</h:panelGrid>
+				</p:panel>
+				<p:panel id="search_panel">
+					<h:panelGrid columns="3">
+						<h:outputLabel value="Search User" />
+						<h:inputText value="#{userRegistrationManagedBean.existingUser}" />
+						<p:commandButton value="Search"
+							actionListener="#{userRegistrationManagedBean.updateUser}" update="regis_panel"></p:commandButton>
+					</h:panelGrid>
+				</p:panel>
+			</h:panelGroup>
+		</h:form>
+	</ui:define>
+</ui:composition>

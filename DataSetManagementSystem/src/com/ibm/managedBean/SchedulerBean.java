@@ -1,9 +1,5 @@
 package com.ibm.managedBean;
 
-import static org.quartz.DateBuilder.evenMinuteDate;
-import static org.quartz.JobBuilder.newJob;
-import static org.quartz.TriggerBuilder.newTrigger;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -16,10 +12,11 @@ import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 
 import org.quartz.JobDetail;
-import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
+import org.quartz.SimpleTrigger;
 import org.quartz.Trigger;
+import org.quartz.TriggerUtils;
 import org.quartz.ee.servlet.QuartzInitializerListener;
 import org.quartz.impl.StdSchedulerFactory;
 
@@ -47,16 +44,19 @@ public class SchedulerBean implements Serializable {
 		StdSchedulerFactory factory = (StdSchedulerFactory) servletContext
                 .getAttribute(QuartzInitializerListener.QUARTZ_FACTORY_KEY);
 		 // computer a time that is on the next round minute
-	    Date runTime = evenMinuteDate(new Date());
-		scheduler = stdSchedulerFactory.getScheduler();
+	    Date runTime = TriggerUtils.getEvenMinuteDate(new Date());
+	    scheduler = stdSchedulerFactory.getScheduler();
 		scheduler.getSchedulerName();
 		 // define the job and tie it to our HelloJob class
-	    JobDetail job = newJob(SchedulerJob.class).withIdentity("job1", "group1").build();
+	    JobDetail job = new JobDetail("job1", "group1",SchedulerJob.class);
+	    	//	newJob(SchedulerJob.class).withIdentity("job1", "group1").build();
 
 	    // Trigger the job to run on the next round minute
 	    System.out.println("Time before called " + Calendar.getInstance().getTime());
 	    System.out.println(runTime);
-	    Trigger trigger = newTrigger().withIdentity("trigger1", "group1").startAt(runTime).build();
+	    SimpleTrigger trigger = new SimpleTrigger("trigger1", "group1",runTime);
+	   // Trigger trigger = new 
+	    		//newTrigger().withIdentity("trigger1", "group1").startAt(runTime).build();
 
 
 	    // Tell quartz to schedule the job using our trigger
@@ -84,14 +84,7 @@ public class SchedulerBean implements Serializable {
 		}
 	}
 
-	// trigger a job
-	public void fireNow(String jobName, String jobGroup)
-			throws SchedulerException {
-
-		JobKey jobKey = new JobKey(jobName, jobGroup);
-		scheduler.triggerJob(jobKey);
-
-	}
+	
 
 	public List<QuartzJob> getQuartzJobList() {
 
